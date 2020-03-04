@@ -1,0 +1,225 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:koyag_qr/utils/Colores.dart';
+import 'package:koyag_qr/utils/Validator.dart';
+
+import 'LoginLock.dart';
+
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+
+  double alto = 0;
+  double ancho = 0;
+  final formKey = GlobalKey<FormState>();
+  String email = '';
+  String password = '';
+
+  bool block_pass = false;
+
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
+  Future<bool> exit() async {
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    alto = MediaQuery.of(context).size.height;
+    ancho = MediaQuery.of(context).size.width;
+    return WillPopScope(
+      onWillPop: exit,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: _contenido(),
+      ),
+    );
+  }
+
+  Widget _contenido(){
+    return SafeArea(
+      child: Container(
+        width: ancho,
+        child: SingleChildScrollView(
+          child: Stack(
+            children: <Widget>[
+              Container(
+                width: ancho,
+                height: alto * 0.12,
+                margin: EdgeInsets.only(left: ancho * 0.15,right: ancho * 0.15,top: alto * 0.15),
+                child: FittedBox(
+                  child: Image.asset('assets/logoKY.png'),
+                  fit: BoxFit.fill,
+                ),
+              ),
+              Container(
+                width: ancho,
+                height: alto * 0.3,
+                margin: EdgeInsets.only(left: ancho * 0.4),
+                child: FittedBox(
+                  child: Image.asset('assets/curva.png'),
+                  fit: BoxFit.fill,
+                ),
+              ),
+              Container(
+                width: ancho,
+                margin: EdgeInsets.only(top: alto * 0.28),
+                child: Column(
+                  children: <Widget>[
+                    _titulo(),
+                    SizedBox(height: alto * 0.06,),
+                    _formulario(),
+                    SizedBox(height: alto * 0.03,),
+                    _terminos(),
+                    SizedBox(height: alto * 0.03,),
+                    _buttonSumit(context),
+                    SizedBox(height: alto * 0.03,),
+                    _olvidePass(),
+                  ],
+                ),
+              ),
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _olvidePass(){
+    return Container(
+      child: InkWell(
+        child: Text('¿Olvidaste tu contraseña?',style: TextStyle(fontSize: 16,color: colorPurple),),
+        onTap: (){
+          Navigator.push(context, new MaterialPageRoute(
+              builder: (BuildContext context) => new LoginBlock()));
+        },
+      ),
+    );
+  }
+
+  Widget _buttonSumit(BuildContext context){
+    return Container(
+      width: ancho,
+      margin: EdgeInsets.only(left: ancho * 0.05,right: ancho * 0.05),
+      child: RaisedButton(
+        color: colorPurple,
+        child: Text('INICIAR SESIÓN',style: TextStyle(color: Colors.white),),
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(18.0),
+            side: BorderSide(color: colorPurple)
+        ),
+        onPressed: (){
+          if(formKey.currentState.validate()){
+            if(!checkTerminos){
+              Fluttertoast.showToast(
+                  msg: "Aceptar términos y condiciones de uso",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIos: 1,
+                  backgroundColor: Colors.red[900],
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
+            }else{
+              formKey.currentState.save();
+            }
+          }
+        },
+      ),
+    );
+  }
+
+  bool checkTerminos = false;
+  Widget _terminos(){
+    return Container(
+      width: ancho,
+      margin: EdgeInsets.only(left: ancho * 0.01,right: ancho * 0.05),
+      child: Row(
+        children: <Widget>[
+          Transform.scale(
+            scale: 1.2,
+            child: Checkbox(
+              value: checkTerminos,
+              activeColor: colorPurple,
+              onChanged: (bool value) {
+                checkTerminos = value;
+                setState(() {});
+              },
+            ),
+          ),
+          Text('Acepto los '),
+          Text('Términos y condiciones de uso',style: TextStyle(color: colorPurple,decoration: TextDecoration.underline,),),
+        ],
+      ),
+    );
+  }
+
+  Widget _formulario(){
+    return Container(
+      margin: EdgeInsets.only(left: ancho * 0.05,right: ancho * 0.05),
+      child: Form(
+        key: formKey,
+        child: Column(
+          children: <Widget>[
+            Container(
+              child: Material(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0),side: BorderSide(color: colorBordeForm)),
+                child: TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                      hintText: 'Correo electrónico',
+                      border: InputBorder.none,
+                      contentPadding:EdgeInsets.symmetric(horizontal: ancho * 0.05, vertical: alto * 0.022)
+                  ),
+                  onSaved: (value) => email = value,
+                  validator: (value) => Validator.validateEmail(value),
+                ),
+              ),
+            ),
+            SizedBox(height: alto * 0.04,),
+            Container(
+              child: Material(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0),side: BorderSide(color: colorBordeForm)),
+                child: TextFormField(
+                  keyboardType: TextInputType.text,
+                  obscureText: !block_pass,
+                  decoration: InputDecoration(
+                    hintText: 'Contraseña',
+                    border: InputBorder.none,
+                    contentPadding:EdgeInsets.symmetric(horizontal: ancho * 0.05, vertical: alto * 0.022),
+                    suffixIcon: IconButton(
+                      icon: !block_pass ? Icon(Icons.remove_red_eye,color: Colors.black,) : Icon(Icons.visibility_off,color: Colors.black),
+                      onPressed: (){
+                        block_pass = !block_pass;
+                        setState(() {});
+                      },
+                    )
+                  ),
+                  onSaved: (value) => password = value,
+                  validator: (value) => Validator.validatePassword(value),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _titulo(){
+    return Container(
+      width: ancho * 0.7,
+      child: Text('Inicia sesión y comienza la acreditación de los participantes de tu evento',
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 14,height: alto * 0.002),),
+    );
+  }
+
+}

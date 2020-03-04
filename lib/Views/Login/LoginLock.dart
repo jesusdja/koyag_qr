@@ -1,0 +1,207 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:koyag_qr/utils/Colores.dart';
+import 'package:koyag_qr/utils/Validator.dart';
+
+class LoginBlock extends StatefulWidget {
+  @override
+  _LoginBlockState createState() => _LoginBlockState();
+}
+
+class _LoginBlockState extends State<LoginBlock> {
+  double alto = 0;
+  double ancho = 0;
+  final formKey = GlobalKey<FormState>();
+  String email = '';
+  String password = '';
+
+  bool sendEmail = false;
+
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
+  Future<bool> exit() async {
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    alto = MediaQuery.of(context).size.height;
+    ancho = MediaQuery.of(context).size.width;
+    return WillPopScope(
+      onWillPop: exit,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: _contenido(context),
+      ),
+    );
+  }
+
+  Widget _contenido(BuildContext contexto){
+    return SafeArea(
+      child: Container(
+        width: ancho,
+        child: SingleChildScrollView(
+          child: Stack(
+            children: <Widget>[
+              Container(
+                width: ancho,
+                height: alto * 0.3,
+                margin: EdgeInsets.only(left: ancho * 0.4),
+                child: FittedBox(
+                  child: Image.asset('assets/curva.png'),
+                  fit: BoxFit.fill,
+                ),
+              ),
+              _circuleBack(context),
+              Container(
+                width: ancho,
+                margin: EdgeInsets.only(top: alto * 0.22,left: ancho * 0.08,right: ancho * 0.08),
+                child: Column(
+                  children: <Widget>[
+                    sendEmail ? Container() : _titulo(),
+                    SizedBox(height: alto * 0.02,),
+                    sendEmail ? Container() : _titulo2(),
+                    SizedBox(height: alto * 0.05,),
+                    sendEmail ? Container() : _formulario(),
+                    SizedBox(height: alto * 0.05,),
+                    sendEmail ? Container() : _buttonSumit(contexto),
+                    sendEmail ? _imagenEmailSend() : Container(),
+                    sendEmail ? Divider(color: colorLine,) : Container(),
+                    SizedBox(height: alto * 0.02,),
+                    _buttonBack(contexto),
+                    SizedBox(height: alto * 0.05,),
+                    _footer(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _imagenEmailSend(){
+    return Container(
+      width: ancho * 0.2,
+      height: alto * 0.3,
+      margin: EdgeInsets.only(left: ancho * 0.4),
+      child: FittedBox(
+        child: Image.asset('assets/mobile.png'),
+        fit: BoxFit.fill,
+      ),
+    );
+  }
+
+  Widget _footer(){
+    return Container(
+      width: ancho,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text('Copyright © 2019 ',style: TextStyle(color: colorfooter,fontSize: alto * 0.02),),
+          Text('EventVice',style: TextStyle(color: colorfooter,fontSize: alto * 0.02,fontWeight: FontWeight.bold),),
+        ],
+      ),
+    );
+  }
+
+  Widget _buttonBack(BuildContext context){
+    return Container(
+      width: ancho,
+      margin: EdgeInsets.only(left: ancho * 0.05,right: ancho * 0.05),
+      child: RaisedButton(
+        color: Colors.white,
+        child: Text('VOLVER',style: TextStyle(color: colorPurple),),
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(18.0),
+            side: BorderSide(color: colorPurple)
+        ),
+        onPressed: (){
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
+
+  Widget _buttonSumit(BuildContext context){
+    return Container(
+      width: ancho,
+      margin: EdgeInsets.only(left: ancho * 0.05,right: ancho * 0.05),
+      child: RaisedButton(
+        color: colorPurple,
+        child: Text('CONTINUAR',style: TextStyle(color: Colors.white),),
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(18.0),
+            side: BorderSide(color: colorPurple)
+        ),
+        onPressed: (){
+          if(formKey.currentState.validate()){
+            formKey.currentState.save();
+            sendEmail = true;
+            setState(() {});
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _formulario(){
+    return Container(
+      child: Form(
+        key: formKey,
+        child: Container(
+          child: Material(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0),side: BorderSide(color: colorBordeForm)),
+            child: TextFormField(
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                  hintText: 'Correo electrónico',
+                  border: InputBorder.none,
+                  contentPadding:EdgeInsets.symmetric(horizontal: ancho * 0.05, vertical: alto * 0.022)
+              ),
+              onSaved: (value) => email = value,
+              validator: (value) => Validator.validateEmail(value),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _titulo2(){
+    return Container(
+      width: ancho,
+      child: Text('Te enviaremos una nueva contraseña a tu correo electrónico.',textAlign: TextAlign.left,
+        style: TextStyle(fontSize: alto * 0.02,color: colorPurpleT2),),
+    );
+  }
+
+  Widget _titulo(){
+    return Container(
+      width: ancho,
+      child: Text('Restablecer contraseña',textAlign: TextAlign.left,
+        style: TextStyle(fontSize: alto * 0.032,color: colorPurple,fontWeight: FontWeight.bold),),
+    );
+  }
+
+  Widget _circuleBack(BuildContext context){
+    return Container(
+      margin: EdgeInsets.only(left: ancho * 0.03,top: alto * 0.03),
+      child: SizedBox(
+        width: 80,
+        height: 80,
+        child: FloatingActionButton(
+          elevation: 0,
+          backgroundColor: colorbuttonBack,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Center(child: Icon(Icons.arrow_back_ios,size: alto * 0.05,color: colorbuttonBackArrow,),),
+        ),
+      ),
+    );
+  }
+}
