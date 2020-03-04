@@ -59,14 +59,19 @@ class _LoginBlockState extends State<LoginBlock> {
                 child: Column(
                   children: <Widget>[
                     sendEmail ? Container() : _titulo(),
-                    SizedBox(height: alto * 0.02,),
+                    sendEmail ? SizedBox(height: alto * 0,) : SizedBox(height: alto * 0.02,) ,
                     sendEmail ? Container() : _titulo2(),
-                    SizedBox(height: alto * 0.05,),
+                    sendEmail ? SizedBox(height: alto * 0,) : SizedBox(height: alto * 0.05,) ,
                     sendEmail ? Container() : _formulario(),
-                    SizedBox(height: alto * 0.05,),
+                    sendEmail ? SizedBox(height: alto * 0,) : SizedBox(height: alto * 0.05,) ,
                     sendEmail ? Container() : _buttonSumit(contexto),
                     sendEmail ? _imagenEmailSend() : Container(),
-                    sendEmail ? Divider(color: colorLine,) : Container(),
+                    sendEmail ? SizedBox(height: alto * 0.02,) : SizedBox(height: alto * 0,) ,
+                    sendEmail ? _textoCorreoEnviado('Te hemos enviado tu nueva contraseña a:') : Container(),
+                    sendEmail ? SizedBox(height: alto * 0.01,) : SizedBox(height: alto * 0,) ,
+                    sendEmail ? _textoCorreoEnviado(email,negrita: FontWeight.bold) : Container(),
+                    sendEmail ? SizedBox(height: alto * 0.03,) : SizedBox(height: alto * 0,) ,
+                    sendEmail ? Divider(color: colorLine,thickness: 2,) : Container(),
                     SizedBox(height: alto * 0.02,),
                     _buttonBack(contexto),
                     SizedBox(height: alto * 0.05,),
@@ -81,11 +86,15 @@ class _LoginBlockState extends State<LoginBlock> {
     );
   }
 
+  Widget _textoCorreoEnviado(String texto,{FontWeight negrita : FontWeight.normal}){
+    return Text(texto,style: TextStyle(fontWeight: negrita,fontSize: 16),);
+  }
+
   Widget _imagenEmailSend(){
     return Container(
-      width: ancho * 0.2,
-      height: alto * 0.3,
-      margin: EdgeInsets.only(left: ancho * 0.4),
+      width: ancho * 0.5,
+      height: alto * 0.2,
+      //margin: EdgeInsets.only(left: ancho * 0.4),
       child: FittedBox(
         child: Image.asset('assets/mobile.png'),
         fit: BoxFit.fill,
@@ -113,7 +122,7 @@ class _LoginBlockState extends State<LoginBlock> {
       margin: EdgeInsets.only(left: ancho * 0.05,right: ancho * 0.05),
       child: RaisedButton(
         color: Colors.white,
-        child: Text('VOLVER',style: TextStyle(color: colorPurple),),
+        child: Text('VOLVER',style: TextStyle(color: colorPurple,fontWeight: FontWeight.bold),),
         shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(18.0),
             side: BorderSide(color: colorPurple)
