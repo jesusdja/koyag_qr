@@ -47,10 +47,12 @@ class _StarLogoState extends State<StartLogo> with SingleTickerProviderStateMixi
     );
   }
   LogoJesus(){
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Image.asset('assets/logoKY.png',width: MediaQuery.of(context).size.width * 0.8,),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Image.asset('assets/logoKY.png',width: MediaQuery.of(context).size.width * 0.8,),
+        ),
       ),
     );
   }

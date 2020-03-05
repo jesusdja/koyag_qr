@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'Services/auth.dart';
+import 'Views/Home/Home.dart';
 import 'Views/Login/Login.dart';
 import 'Views/StarLogo.dart';
 
@@ -36,7 +37,7 @@ class _AppState extends State<App>{
             case Status.Login:
               return Login();
             case Status.home:
-              return Scaffold(body: Container(),);
+              return Home();
               break;
           }
         },

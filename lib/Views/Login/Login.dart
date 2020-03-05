@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:koyag_qr/Views/Home/Home.dart';
 import 'package:koyag_qr/utils/Colores.dart';
 import 'package:koyag_qr/utils/Validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'LoginLock.dart';
 
@@ -18,10 +20,20 @@ class _LoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
-
+  SharedPreferences prefs;
   bool block_pass = false;
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
+  @override
+  void initState() {
+    inicializar();
+    super.initState();
+  }
+
+  inicializar() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
   Future<bool> exit() async {
     return false;
@@ -113,7 +125,7 @@ class _LoginState extends State<Login> {
             borderRadius: new BorderRadius.circular(18.0),
             side: BorderSide(color: colorPurple)
         ),
-        onPressed: (){
+        onPressed: () async {
           if(formKey.currentState.validate()){
             if(!checkTerminos){
               Fluttertoast.showToast(
@@ -127,6 +139,9 @@ class _LoginState extends State<Login> {
               );
             }else{
               formKey.currentState.save();
+              await prefs.setInt('koyagQRLogin',1);
+              Navigator.push(context, new MaterialPageRoute(
+                  builder: (BuildContext context) => new Home()));
             }
           }
         },
