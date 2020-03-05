@@ -8,8 +8,6 @@ class ViewQR extends StatefulWidget {
 class _ViewQRState extends State<ViewQR> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
-    );
+    return Scaffold();
   }
 }

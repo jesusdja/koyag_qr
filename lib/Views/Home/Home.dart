@@ -1,3 +1,4 @@
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:koyag_qr/Views/Login/Login.dart';
 import 'package:koyag_qr/Views/QR/ViewQR.dart';
@@ -73,9 +74,13 @@ class _HomeState extends State<Home> {
                       child: Center(
                         child: Image.asset('assets/codigo-qr.png',scale: 1.2,),
                       ),
-                      onPressed: (){
-                        Navigator.push(context, new MaterialPageRoute(
-                            builder: (BuildContext context) => new ViewQR()));
+                      onPressed: () async {
+                        String _barcode = "";
+                        String barcode = await BarcodeScanner.scan();
+                        setState(() => _barcode = barcode);
+                        print('');
+//                        Navigator.push(context, new MaterialPageRoute(
+//                            builder: (BuildContext context) => new ViewQR()));
                       },
                     ),
                   ),
