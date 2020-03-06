@@ -36,4 +36,22 @@ class conexionHttp{
     return response;
   }
 
+  Future<http.Response> httpListarUser() async{
+    var response;
+
+    try{
+      String url = 'https://koyangdev.koyag.com/8df4fdfc/app';
+      String token  = await obtenerToken();
+      response = await http.get(url,
+          headers: {HttpHeaders.authorizationHeader: "Bearer $token"}
+      );
+    }catch(e){
+      print(e.toString());
+    }
+
+    return response;
+  }
+
+
+
 }

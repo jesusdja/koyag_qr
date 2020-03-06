@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:koyag_qr/Services/Conexionhttp.dart';
+import 'package:koyag_qr/Models/Usuario.dart';
 import 'package:koyag_qr/Views/Login/Login.dart';
+import 'package:koyag_qr/Views/Profile/Profile.dart';
 import 'package:koyag_qr/Views/QR/ViewQR.dart';
 import 'package:koyag_qr/utils/Colores.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,23 +18,33 @@ class _HomeState extends State<Home> {
 
   double alto = 0;
   double ancho = 0;
+  bool cargando = true;
+
   conexionHttp conexionHispanos = new conexionHttp();
 
-  List<String> lista = new List<String>();
+  List<dynamic> participantes;
 
   @override
   void initState() {
     inicializar();
     super.initState();
+    participantes = new List<dynamic>();
   }
 
-  inicializar(){
-    lista.add('Barrera, Julían');
-    lista.add('Barros, Andréa');
-    lista.add('Gálvez, Antonia');
-    lista.add('Gorrido, Eduardo');
-    lista.add('González, María');
-    lista.add('López, Juan Pablo');
+  inicializar() async {
+    cargando = true;
+    setState(() {});
+
+    try{
+      var response = await conexionHispanos.httpListarUser();
+      var value = jsonDecode(response.body);
+      participantes = value['data']['participants'];
+    }catch(e){
+      print(e.toString());
+    }
+
+    cargando = false;
+    setState(() {});
   }
 
   Future<bool> exit() async {
@@ -50,57 +62,46 @@ class _HomeState extends State<Home> {
         onWillPop: exit,
         child: Scaffold(
           backgroundColor: colorFondo,
-          body: Stack(
-            children: <Widget>[
-              Container(
-                width: ancho,
-                height: 56,
-                margin: EdgeInsets.only(left: 15,right: 15,top: 10),
-                child: contentHeader(),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: alto * 0.1),
-                decoration: BoxDecoration(
-                    color: colorFondo2,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))),
-                child: _contenido(),
-              ),
-              Positioned(
-                left: ancho * 0.75,
-                top: alto * 0.7,
-                child: Container(
-                  height: 80.0,
-                  width: 80.0,
-                  child: FittedBox(
-                    child: FloatingActionButton(
-                      backgroundColor: colorPurple,
-                      child: Center(
-                        child: Image.asset('assets/codigo-qr.png',scale: 1.2,),
+          body: SingleChildScrollView(
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  width: ancho,
+                  height: 56,
+                  margin: EdgeInsets.only(left: 15,right: 15,top: 10),
+                  child: contentHeader(),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: alto * 0.1),
+                  decoration: BoxDecoration(
+                      color: colorFondo2,
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))),
+                  child:  _contenido(),
+                ),
+                Positioned(
+                  left: ancho * 0.75,
+                  top: alto * 0.7,
+                  child: Container(
+                    height: 80.0,
+                    width: 80.0,
+                    child: FittedBox(
+                      child: FloatingActionButton(
+                        backgroundColor: colorPurple,
+                        child: Center(
+                          child: Image.asset('assets/codigo-qr.png',scale: 1.2,),
+                        ),
+                        onPressed: () async {
+
+                          Navigator.push(context, new MaterialPageRoute(
+                              builder: (BuildContext context) => new ViewQR()));
+
+                        },
                       ),
-                      onPressed: () async {
-
-//                        try{
-//                          String qr = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3';
-//                          var response = await conexionHispanos.httpVerificarQR(qr);
-//                          var value = jsonDecode(response.body);
-//                          print('${value['status']}');
-//
-//                          if(value['status'] == 'accredited'){
-//                            print('');
-//                          }
-//
-//                        }catch(e){
-//                          print(e.toString());
-//                        }
-
-                        Navigator.push(context, new MaterialPageRoute(
-                            builder: (BuildContext context) => new ViewQR()));
-                      },
                     ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
 
         ),
@@ -117,7 +118,9 @@ class _HomeState extends State<Home> {
           flex: 1,
           child: IconButton(
             icon: Icon(Icons.cached,size: alto * 0.04,color: Colors.white,),
-            onPressed: (){},
+            onPressed: (){
+              inicializar();
+            },
           ),
         ),
         Expanded(
@@ -171,7 +174,14 @@ class _HomeState extends State<Home> {
             padding: EdgeInsets.only(top: alto * 0.03,bottom: alto * 0.03,left: ancho * 0.05,right: ancho * 0.05),
             child: _buscador(),
           ),
-          _listado(),
+          cargando ? Container(
+            height: alto * 0.65,
+            child: Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(colorPurple),
+              ),
+            ),
+          ) : _listado(),
         ],
       ),
     );
@@ -182,23 +192,31 @@ class _HomeState extends State<Home> {
     return Container(
       height: alto * 0.64,
       width: ancho,
-      child: ListView.builder(
-        itemCount: lista.length,
+      child: participantes.length != 0 ? ListView.builder(
+        itemCount: participantes.length,
         itemBuilder: (context,index){
 
-          if(letraList.toUpperCase() != lista[index].toUpperCase().substring(0,1)){
-            letraList = lista[index].substring(0,1).toUpperCase();
+          Usuario usuario = Usuario.fromJson(participantes[index]);
+
+          if(letraList.toUpperCase() != usuario.lastname.toUpperCase().substring(0,1)){
+            letraList = usuario.lastname.substring(0,1).toUpperCase();
             return Container(
               child: Column(
                 children: <Widget>[
                   _item('$letraList'),
-                  _itemDescrip('${lista[index]}'),
+                  _itemDescrip('${usuario.lastname},${usuario.firstname}',usuario),
                 ],
               ),
             );
           }
-          return _itemDescrip('${lista[index]}');
+          return _itemDescrip('${usuario.lastname},${usuario.firstname}',usuario);
         },
+      ) : Center(
+        child: Container(
+          height: alto * 0.2,
+          width: ancho,
+          child: Text('No existen usuarios.',style: TextStyle(fontSize: alto * 0.025),textAlign: TextAlign.center,)
+        ),
       ),
     );
   }
@@ -217,43 +235,55 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Map<String,bool> mapCheck = Map();
-  Widget _itemDescrip(texto){
-    return Card(
-      margin: EdgeInsets.all(0.5),
-      child: Container(
-        padding: EdgeInsets.only(left: ancho * 0.05,right: ancho * 0.05),
-        width: ancho,
-        height: alto * 0.09,
-        color: Colors.white,
-        child: Center(
-          child: Container(
-            width: ancho,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 5,
-                  child: _textoLista('$texto',TextAlign.left,alto * 0.022)
-                ),
-                Expanded(
-                  flex: 1,
-                  child: IconButton(
-                    icon: (mapCheck[texto]== null || mapCheck[texto] == false) ?
+  Map<int,bool> mapCheck = Map();
+  Widget _itemDescrip(String texto,Usuario usuario){
+    return InkWell(
+      child: Card(
+        margin: EdgeInsets.all(0.5),
+        child: Container(
+          padding: EdgeInsets.only(left: ancho * 0.05,right: ancho * 0.05),
+          width: ancho,
+          height: alto * 0.09,
+          color: Colors.white,
+          child: Center(
+            child: Container(
+              width: ancho,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 5,
+                    child: _textoLista('$texto',TextAlign.left,alto * 0.022)
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: usuario.accreditationStatus == 0 ?
                     Icon(Icons.remove_circle_outline,color: colorCheckOff,) :
                     Icon(Icons.check_circle_outline,color: colorCheck,),
-                    onPressed: (){
-                      if(mapCheck[texto] == null){mapCheck[texto] = false;}
-                      mapCheck[texto] = !mapCheck[texto];
-                      setState(() {});
-                    },
+//                    IconButton(
+//                      icon: (mapCheck[usuario.participantId]== null || mapCheck[usuario.participantId] == false) ?
+//                      Icon(Icons.remove_circle_outline,color: colorCheckOff,) :
+//                      Icon(Icons.check_circle_outline,color: colorCheck,),
+//                      onPressed: (){
+//                        if(mapCheck[usuario.participantId] == null){mapCheck[usuario.participantId] = false;}
+//                        mapCheck[usuario.participantId] = !mapCheck[usuario.participantId];
+//                        setState(() {});
+//
+//                        //MODIFICAR EN API
+//
+//                      },
+//                    ),
                   ),
-                ),
 
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
+      onTap: (){
+        Navigator.push(context, new MaterialPageRoute(
+            builder: (BuildContext context) => new Profile()));
+      },
     );
   }
 
