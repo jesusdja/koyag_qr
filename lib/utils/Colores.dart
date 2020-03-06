@@ -32,4 +32,7 @@ Color colorCheckOff = HexColor('#707070');
 //************QR******************
 //********************************
 Color colorOpacyt = HexColor('#343356');
+Color colorAlert1 = HexColor('#01C770');
+Color colorAlert2 = HexColor('#F00A4D');
+Color colorAlert3 = HexColor('#FFF3CD');
 
