@@ -22,7 +22,14 @@ Color colorLine = HexColor('BEBEBE');
 // *******************************
 //************HOME****************
 //********************************
+
 Color colorFondo = HexColor('#454473');
 Color colorFondo2 = HexColor('#EAEFF1');
 Color colorCheck = HexColor('#00C770');
 Color colorCheckOff = HexColor('#707070');
+
+// *******************************
+//************QR******************
+//********************************
+Color colorOpacyt = HexColor('#343356');
+

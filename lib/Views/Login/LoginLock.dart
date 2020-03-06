@@ -66,7 +66,7 @@ class _LoginBlockState extends State<LoginBlock> {
                     sendEmail ? SizedBox(height: alto * 0,) : SizedBox(height: alto * 0.05,) ,
                     sendEmail ? Container() : _buttonSumit(contexto),
                     sendEmail ? _imagenEmailSend() : Container(),
-                    sendEmail ? SizedBox(height: alto * 0.02,) : SizedBox(height: alto * 0,) ,
+                    sendEmail ? SizedBox(height: alto * 0.035,) : SizedBox(height: alto * 0,) ,
                     sendEmail ? _textoCorreoEnviado('Te hemos enviado tu nueva contraseña a:') : Container(),
                     sendEmail ? SizedBox(height: alto * 0.01,) : SizedBox(height: alto * 0,) ,
                     sendEmail ? _textoCorreoEnviado(email,negrita: FontWeight.bold) : Container(),
@@ -92,8 +92,8 @@ class _LoginBlockState extends State<LoginBlock> {
 
   Widget _imagenEmailSend(){
     return Container(
-      width: ancho * 0.5,
-      height: alto * 0.2,
+      width: ancho * 0.3,
+      height: alto * 0.12,
       //margin: EdgeInsets.only(left: ancho * 0.4),
       child: FittedBox(
         child: Image.asset('assets/mobile.png'),
