@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/Views/Login/Login.dart';
 import 'package:koyag_qr/Views/QR/ViewQR.dart';
 import 'package:koyag_qr/utils/Colores.dart';
@@ -13,6 +16,7 @@ class _HomeState extends State<Home> {
 
   double alto = 0;
   double ancho = 0;
+  conexionHttp conexionHispanos = new conexionHttp();
 
   List<String> lista = new List<String>();
 
@@ -74,14 +78,21 @@ class _HomeState extends State<Home> {
                         child: Image.asset('assets/codigo-qr.png',scale: 1.2,),
                       ),
                       onPressed: () async {
-                        String _barcode = "";
+
 //                        try{
-//                          var barcode = await BarcodeScanner.scan();
-//                          //setState(() => _barcode = barcode);
-//                          print('$barcode');
+//                          String qr = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3';
+//                          var response = await conexionHispanos.httpVerificarQR(qr);
+//                          var value = jsonDecode(response.body);
+//                          print('${value['status']}');
+//
+//                          if(value['status'] == 'accredited'){
+//                            print('');
+//                          }
+//
 //                        }catch(e){
 //                          print(e.toString());
 //                        }
+
                         Navigator.push(context, new MaterialPageRoute(
                             builder: (BuildContext context) => new ViewQR()));
                       },

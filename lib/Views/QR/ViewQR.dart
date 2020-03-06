@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/utils/Colores.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 
@@ -8,7 +12,7 @@ class ViewQR extends StatefulWidget {
   _ViewQRState createState() => _ViewQRState();
 }
 
-enum enumStatusQR {inactivo,aceptado,cerrado,acreditado,invalido}
+enum enumStatusQR {inactivo,accreditation_valid,event_closed,accredited,invalid_qr}
 
 class _ViewQRState extends State<ViewQR> {
 
@@ -75,7 +79,7 @@ class _ViewQRState extends State<ViewQR> {
               width: ancho,
               child: _titulo(),
             ),
-            statusQR != enumStatusQR.invalido ? Container(
+            statusQR != enumStatusQR.inactivo ? Container(
               width: ancho,
               margin: EdgeInsets.only(top: alto * 0.78,left: ancho * 0.1,right: ancho * 0.1),
               child: _mensaje(),
@@ -121,17 +125,78 @@ class _ViewQRState extends State<ViewQR> {
     );
   }
 
-  Widget _mensaje(){
 
-    int status = 3;
 
-    if(status == 1){
+  Widget _camara(){
+    return Center(
+      child: Container(
+        //margin: EdgeInsets.symmetric(horizontal: ancho * 0.08 , vertical: alto * 0.24 ),
+//        decoration: BoxDecoration(
+//            color: Color.fromRGBO(0, 0, 0, 0.7),
+//            borderRadius: BorderRadius.circular(20.0)
+//        ),
+        child: SizedBox(
+          child: camState
+              ? new QrCamera(
+            fit: BoxFit.fill,
+            onError: (context, error) => Text(
+              error.toString(),
+              style: TextStyle(color: Colors.red),
+            ),
+            qrCodeCallback: (code) {
+              setState(() {
+                qr = code;
+                //https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3
+                print(qr);
+
+                if(qr != null && qr != '' && checkQR == false){
+                  setState(() {
+                    checkQR = true;
+                  });
+                  _verificarQR();
+                }
+              });
+            },
+          )
+              : new Center(child: new Text("Cargando lector QR")),
+        ),
+      ),
+    );
+  }
+
+  _verificarQR() async {
+    try{
+      String qr2 = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3';
+      var response = await conexionHispanos.httpVerificarQR(qr2);
+
+      if(response.statusCode == 200){
+        var value = jsonDecode(response.body);
+        if(value['status'] == 'accredited'){statusQR = enumStatusQR.accredited;}
+        if(value['status'] == 'accreditation_valid'){statusQR = enumStatusQR.accreditation_valid;}
+        if(value['status'] == 'invalid_qr'){statusQR = enumStatusQR.invalid_qr;}
+        if(value['status'] == 'event_closed'){statusQR = enumStatusQR.event_closed;}
+      }
+      await Future.delayed(Duration(seconds: 2));
+      setState(() {
+        checkQR = false;
+      });
+
+    }catch(e){
+      print(e.toString());
+    }
+  }
+
+  bool checkQR = false;
+  conexionHttp conexionHispanos = new conexionHttp();
+  Widget _mensaje() {
+
+    if(statusQR == enumStatusQR.accreditation_valid){
       return alertaSmS('Juan Pablo López','Ha sido acreditado','a las 09:41',colorAlert1,1);
     }
-    if(status == 2){
+    if(statusQR == enumStatusQR.accredited){
       return alertaSmS('Andréa Barros','Fue acreditada','a las 15:34',colorAlert2,2);
     }
-    if(status == 3){
+    if(statusQR == enumStatusQR.invalid_qr){
       return alertaSmS('','Este código QR no pertenece a este evento','',colorAlert3,3);
     }
     return Container();
@@ -183,11 +248,11 @@ class _ViewQRState extends State<ViewQR> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(titulo,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),
+                  Text(titulo,style: TextStyle(fontWeight: FontWeight.bold,fontSize: alto * 0.02),),
                   SizedBox(height: alto * 0.01,),
-                  Text(mensaje,style: TextStyle(fontSize: 15),),
+                  Text(mensaje,style: TextStyle(fontSize: alto * 0.02),),
                   SizedBox(height: alto * 0.01,),
-                  Text(hora,style: TextStyle(fontSize: 15),)
+                  Text(hora,style: TextStyle(fontSize: alto * 0.02),)
                 ],
               ),
             ),
@@ -197,33 +262,15 @@ class _ViewQRState extends State<ViewQR> {
     );
   }
 
-  Widget _camara(){
-    return Center(
-      child: Container(
-        //margin: EdgeInsets.symmetric(horizontal: ancho * 0.08 , vertical: alto * 0.24 ),
-//        decoration: BoxDecoration(
-//            color: Color.fromRGBO(0, 0, 0, 0.7),
-//            borderRadius: BorderRadius.circular(20.0)
-//        ),
-        child: SizedBox(
-          child: camState
-              ? new QrCamera(
-            fit: BoxFit.fill,
-            onError: (context, error) => Text(
-              error.toString(),
-              style: TextStyle(color: Colors.red),
-            ),
-            qrCodeCallback: (code) {
-              setState(() {
-                qr = code;
-                //https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3
-                print(qr);
-              });
-            },
-          )
-              : new Center(child: new Text("Cargando lector QR")),
-        ),
-      ),
+  _showAlert(String texto){
+    Fluttertoast.showToast(
+        msg: texto,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red[900],
+        textColor: Colors.white,
+        fontSize: 16.0
     );
   }
 

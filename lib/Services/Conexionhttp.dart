@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:koyag_qr/utils/Globales.dart';
 
@@ -17,5 +18,22 @@ class conexionHttp{
     return response;
   }
 
+  Future<http.Response> httpVerificarQR(String qr) async{
+    var response;
+
+    try{
+      String token  = await obtenerToken();
+      Map<String, String> requestHeaders = {
+        'Authorization': '$token'
+      };
+      response = await http.get(qr,
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"}
+      );
+    }catch(e){
+      print(e.toString());
+    }
+
+    return response;
+  }
 
 }
