@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/Views/Home/Home.dart';
 import 'package:koyag_qr/utils/Colores.dart';
 import 'package:koyag_qr/utils/Validator.dart';
@@ -22,8 +25,8 @@ class _LoginState extends State<Login> {
   String password = '';
   SharedPreferences prefs;
   bool block_pass = false;
-
-  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  bool cargando =false;
+  conexionHttp conexionHispanos = new conexionHttp();
 
   @override
   void initState() {
@@ -88,7 +91,9 @@ class _LoginState extends State<Login> {
                     SizedBox(height: alto * 0.03,),
                     _terminos(),
                     SizedBox(height: alto * 0.03,),
-                    _buttonSumit(context),
+                    cargando ? Container(
+                      child: CircularProgressIndicator(),
+                    ) : _buttonSumit(context),
                     SizedBox(height: alto * 0.03,),
                     _olvidePass(),
                   ],
@@ -126,26 +131,58 @@ class _LoginState extends State<Login> {
             side: BorderSide(color: colorPurple)
         ),
         onPressed: () async {
+          cargando = true;
+          setState(() {});
+
           if(formKey.currentState.validate()){
             if(!checkTerminos){
-              Fluttertoast.showToast(
-                  msg: "Aceptar términos y condiciones de uso",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIos: 1,
-                  backgroundColor: Colors.red[900],
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
+              _showAlert("Aceptar términos y condiciones de uso");
+              cargando = false;
+              setState(() {});
             }else{
               formKey.currentState.save();
-              await prefs.setInt('koyagQRLogin',1);
-              Navigator.push(context, new MaterialPageRoute(
-                  builder: (BuildContext context) => new Home()));
+              try{
+                email = 'julian@koyag.com';
+                password = '123123123';
+                var response = await conexionHispanos.httpIniciarSesion(email,password);
+                var value = jsonDecode(response.body);
+                if(value['access_token'] != null){
+                  await prefs.setInt('koyagQRLogin',1);
+                  await prefs.setString('koyagQRToken','${value['access_token']}');
+
+                Navigator.push(context, new MaterialPageRoute(
+                    builder: (BuildContext context) => new Home()));
+
+                }else{
+                  String error = '${value['message']['username']} o ${value['message']['password']}';
+                  _showAlert(error);
+                  cargando = false;
+                  setState(() {});
+                }
+              }catch(e){
+                print(e.toString());
+                cargando = false;
+                setState(() {});
+              }
             }
+          }else{
+            cargando = false;
+            setState(() {});
           }
         },
       ),
+    );
+  }
+
+  _showAlert(String texto){
+    Fluttertoast.showToast(
+        msg: texto,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red[900],
+        textColor: Colors.white,
+        fontSize: 16.0
     );
   }
 

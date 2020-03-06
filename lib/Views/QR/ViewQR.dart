@@ -8,21 +8,25 @@ class ViewQR extends StatefulWidget {
   _ViewQRState createState() => _ViewQRState();
 }
 
+enum enumStatusQR {inactivo,aceptado,cerrado,acreditado,invalido}
+
 class _ViewQRState extends State<ViewQR> {
 
   String qr;
   bool camState = false;
   double alto = 0;
   double ancho = 0;
+  enumStatusQR statusQR;
 
   @override
   initState() {
+    statusQR = enumStatusQR.inactivo;
     super.initState();
     inicializar();
   }
 
   inicializar() async {
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 800));
     camState = true;
     setState(() {});
   }
@@ -34,22 +38,34 @@ class _ViewQRState extends State<ViewQR> {
     ancho = MediaQuery.of(context).size.width;
 
     return new Scaffold(
+      backgroundColor: colorOpacyt,
       body: SafeArea(
         child: Stack(
           children: <Widget>[
-            Container(
-              width: ancho,
-              height: alto,
-              child: _fondo1(),
+            Center(
+              child: Container(
+                color: colorOpacyt,
+                width: ancho,
+                height: alto * 0.8,
+                child: _camara(),
+              ),
             ),
             Opacity(
-              opacity: 0.75,
+              opacity: 0.90,
               child: Container(
                 width: ancho,
                 height: alto,
-                color: colorOpacyt,
+                child: _fondo1(),
               ),
             ),
+//            Opacity(
+//              opacity: 0.75,
+//              child: Container(
+//                width: ancho,
+//                height: alto,
+//                color: colorOpacyt,
+//              ),
+//            ),
             Container(
               margin: EdgeInsets.only(top: alto * 0.01),
               child: _header(),
@@ -59,12 +75,7 @@ class _ViewQRState extends State<ViewQR> {
               width: ancho,
               child: _titulo(),
             ),
-            Container(
-              width: ancho,
-              height: alto,
-              child: _camara(),
-            ),
-            qr == null ? Container(
+            statusQR != enumStatusQR.invalido ? Container(
               width: ancho,
               margin: EdgeInsets.only(top: alto * 0.78,left: ancho * 0.1,right: ancho * 0.1),
               child: _mensaje(),
@@ -189,15 +200,15 @@ class _ViewQRState extends State<ViewQR> {
   Widget _camara(){
     return Center(
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: ancho * 0.08 , vertical: alto * 0.24 ),
-        decoration: BoxDecoration(
-            color: Color.fromRGBO(0, 0, 0, 0.7),
-            borderRadius: BorderRadius.circular(20.0)
-        ),
+        //margin: EdgeInsets.symmetric(horizontal: ancho * 0.08 , vertical: alto * 0.24 ),
+//        decoration: BoxDecoration(
+//            color: Color.fromRGBO(0, 0, 0, 0.7),
+//            borderRadius: BorderRadius.circular(20.0)
+//        ),
         child: SizedBox(
           child: camState
               ? new QrCamera(
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.fill,
             onError: (context, error) => Text(
               error.toString(),
               style: TextStyle(color: Colors.red),
@@ -205,6 +216,8 @@ class _ViewQRState extends State<ViewQR> {
             qrCodeCallback: (code) {
               setState(() {
                 qr = code;
+                //https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3
+                print(qr);
               });
             },
           )
@@ -244,7 +257,7 @@ class _ViewQRState extends State<ViewQR> {
 
   Widget _fondo1(){
     return FittedBox(
-      child: Image.asset('assets/fondoScanQR.png'),
+      child: Image.asset('assets/fondoScanQRP.png',color: colorOpacyt,),
       fit: BoxFit.fill,
     );
   }

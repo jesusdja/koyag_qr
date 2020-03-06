@@ -25,6 +25,9 @@ dependencies:
   #barcode_scan: ^2.0.1
   qr_mobile_vision: 0.2.2
 
+  #CONEXIONES
+  http: ^0.12.0+2
+
 
 dev_dependencies:
   flutter_test:

@@ -35,4 +35,5 @@ Color colorOpacyt = HexColor('#343356');
 Color colorAlert1 = HexColor('#01C770');
 Color colorAlert2 = HexColor('#F00A4D');
 Color colorAlert3 = HexColor('#FFF3CD');
+Color colorOpacyt2 = HexColor('#343356');
 
