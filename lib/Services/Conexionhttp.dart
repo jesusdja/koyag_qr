@@ -30,6 +30,17 @@ class conexionHttp{
     return response;
   }
 
+  Future<http.Response> httpRecuperarPass(String correo) async{
+    var response;
+    try{
+      String url = 'https://koyangdev.koyag.com/auth/password/email?username=$correo';
+      response = await http.post(url,);
+    }catch(ex){
+      print(ex.toString());
+    }
+    return response;
+  }
+
   Future<http.Response> httpVerificarQR(String qr) async{
     var response;
 

@@ -12,6 +12,6 @@ Future<String> obtenerToken() async {
 
 sumarCredito(int cant) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setInt('koyagQRLogin',cant);
+  await prefs.setInt('koyagQRCantAcreditados',cant);
 }
 

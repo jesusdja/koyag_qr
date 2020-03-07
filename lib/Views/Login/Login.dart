@@ -8,6 +8,7 @@ import 'package:koyag_qr/Views/Home/Home.dart';
 import 'package:koyag_qr/utils/Colores.dart';
 import 'package:koyag_qr/utils/Validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'LoginLock.dart';
 
@@ -213,7 +214,16 @@ class _LoginState extends State<Login> {
             ),
           ),
           Text('Acepto los '),
-          Text('Términos y condiciones de uso',style: TextStyle(color: colorPurple,decoration: TextDecoration.underline,),),
+          InkWell(
+            onTap: () async {
+              try{
+                await canLaunch('www.google.com');
+              }catch(e){
+                print(e.toString());
+              }
+            },
+            child: Text('Términos y condiciones de uso',style: TextStyle(color: colorPurple,decoration: TextDecoration.underline,),)
+          ),
         ],
       ),
     );

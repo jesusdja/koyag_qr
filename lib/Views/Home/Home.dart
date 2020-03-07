@@ -25,6 +25,7 @@ class _HomeState extends State<Home> {
   conexionHttp conexionHispanos = new conexionHttp();
 
   List<dynamic> participantes;
+  String fechaEvent = '';
 
 
 
@@ -49,6 +50,7 @@ class _HomeState extends State<Home> {
       if(response.statusCode == 200){
         var value = jsonDecode(response.body);
         participantes = value['data']['participants'];
+        fechaEvent = value['data']['version_date'];
       }
     }catch(e){
       print(e.toString());
@@ -329,6 +331,7 @@ class _HomeState extends State<Home> {
               contentPadding:EdgeInsets.symmetric(horizontal: ancho * 0.05, vertical: alto * 0.022)
           ),
           onChanged: (value) {
+            letraList = '';
             filtro = value;
             setState(() {});
           },

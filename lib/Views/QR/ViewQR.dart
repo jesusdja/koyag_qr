@@ -70,14 +70,6 @@ class _ViewQRState extends State<ViewQR> {
                 child: _fondo1(),
               ),
             ),
-//            Opacity(
-//              opacity: 0.75,
-//              child: Container(
-//                width: ancho,
-//                height: alto,
-//                color: colorOpacyt,
-//              ),
-//            ),
             Container(
               margin: EdgeInsets.only(top: alto * 0.01),
               child: _header(),
@@ -94,41 +86,6 @@ class _ViewQRState extends State<ViewQR> {
             ) : Container(),
           ],
         )
-      /*  new Center(
-          child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new Expanded(
-                  child: camState
-                      ? new Center(
-                    child: new SizedBox(
-                      width: 300.0,
-                      height: 400.0,
-                      child: new QrCamera(
-                        onError: (context, error) => Text(
-                          error.toString(),
-                          style: TextStyle(color: Colors.red),
-                        ),
-                        qrCodeCallback: (code) {
-                          setState(() {
-                            qr = code;
-                          });
-                        },
-                        child: new Container(
-                          decoration: new BoxDecoration(
-                            color: Colors.transparent,
-                            border: Border.all(color: Colors.orange, width: 10.0, style: BorderStyle.solid),
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                      : new Center(child: new Text("Camera inactive"))),
-              new Text("QRCODE: $qr"),
-            ],
-          ),
-        ),*/
       ),
     );
   }
@@ -172,6 +129,9 @@ class _ViewQRState extends State<ViewQR> {
     );
   }
 
+  String nombreAcredit = '';
+  String horaAcredit = '';
+
   _verificarQR() async {
     try{
       //String qr2 = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3';
@@ -179,8 +139,16 @@ class _ViewQRState extends State<ViewQR> {
 
       if(response.statusCode == 200){
         var value = jsonDecode(response.body);
-        if(value['status'] == 'accredited'){statusQR = enumStatusQR.accredited;}
-        if(value['status'] == 'accreditation_valid'){statusQR = enumStatusQR.accreditation_valid;}
+        if(value['status'] == 'accredited'){
+          statusQR = enumStatusQR.accredited;
+          nombreAcredit = value['fullname'];
+          horaAcredit = value['accreditationHour'];
+        }
+        if(value['status'] == 'accreditation_valid'){
+          statusQR = enumStatusQR.accreditation_valid;
+          nombreAcredit = value['fullname'];
+          horaAcredit = value['accreditationHour'];
+        }
         if(value['status'] == 'invalid_qr'){statusQR = enumStatusQR.invalid_qr;}
         if(value['status'] == 'event_closed'){statusQR = enumStatusQR.event_closed;}
       }
@@ -201,10 +169,10 @@ class _ViewQRState extends State<ViewQR> {
     if(statusQR == enumStatusQR.accreditation_valid){
       cantAcreditados++;
       sumarCredito(cantAcreditados);
-      return alertaSmS('Juan Pablo López','Ha sido acreditado','a las 09:41',colorAlert1,1);
+      return alertaSmS('$nombreAcredit','Ha sido acreditado','A las $horaAcredit',colorAlert1,1);
     }
     if(statusQR == enumStatusQR.accredited){
-      return alertaSmS('Andréa Barros','Fue acreditada','a las 15:34',colorAlert2,2);
+      return alertaSmS('$nombreAcredit','Fue acreditada','A las $horaAcredit',colorAlert2,2);
     }
     if(statusQR == enumStatusQR.invalid_qr){
       return alertaSmS('','Este código QR no pertenece a este evento','',colorAlert3,3);

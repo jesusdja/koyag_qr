@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/utils/Colores.dart';
 import 'package:koyag_qr/utils/Validator.dart';
 
@@ -14,7 +17,7 @@ class _LoginBlockState extends State<LoginBlock> {
   final formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
-
+  bool cargando = false;
   bool sendEmail = false;
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
@@ -64,7 +67,7 @@ class _LoginBlockState extends State<LoginBlock> {
                     sendEmail ? SizedBox(height: alto * 0,) : SizedBox(height: alto * 0.05,) ,
                     sendEmail ? Container() : _formulario(),
                     sendEmail ? SizedBox(height: alto * 0,) : SizedBox(height: alto * 0.05,) ,
-                    sendEmail ? Container() : _buttonSumit(contexto),
+                    sendEmail ? Container() : cargando ? _cargandoW() : _buttonSumit(contexto),
                     sendEmail ? _imagenEmailSend() : Container(),
                     sendEmail ? SizedBox(height: alto * 0.035,) : SizedBox(height: alto * 0,) ,
                     sendEmail ? _textoCorreoEnviado('Te hemos enviado tu nueva contraseña a:') : Container(),
@@ -82,6 +85,16 @@ class _LoginBlockState extends State<LoginBlock> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  _cargandoW(){
+    return Container(
+      //width: ancho,
+      //margin: EdgeInsets.only(left: ancho * 0.05,right: ancho * 0.05),
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(colorPurple),
       ),
     );
   }
@@ -134,6 +147,7 @@ class _LoginBlockState extends State<LoginBlock> {
     );
   }
 
+  conexionHttp conexionHispanos = new conexionHttp();
   Widget _buttonSumit(BuildContext context){
     return Container(
       width: ancho,
@@ -145,11 +159,36 @@ class _LoginBlockState extends State<LoginBlock> {
             borderRadius: new BorderRadius.circular(18.0),
             side: BorderSide(color: colorPurple)
         ),
-        onPressed: (){
+        onPressed: () async {
+
+          setState(() {
+            cargando = true;
+          });
+
           if(formKey.currentState.validate()){
             formKey.currentState.save();
-            sendEmail = true;
-            setState(() {});
+
+            try{
+              var response = await conexionHispanos.httpRecuperarPass(email);
+              if(response.statusCode == 200){
+                var value = jsonDecode(response.body);
+                sendEmail = true;
+                setState(() {});
+              }else{
+                setState(() {
+                  cargando = false;
+                });
+              }
+            }catch(e){
+              setState(() {
+                cargando = false;
+              });
+              print(e.toString());
+            }
+          }else{
+            setState(() {
+              cargando = false;
+            });
           }
         },
       ),
