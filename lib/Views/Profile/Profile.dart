@@ -5,6 +5,7 @@ import 'package:koyag_qr/Models/Participante.dart';
 import 'package:koyag_qr/Models/Usuario.dart';
 import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/utils/Colores.dart';
+import 'package:koyag_qr/utils/Globales.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
@@ -148,7 +149,7 @@ class _ProfileState extends State<Profile> {
               width: ancho,
               height: alto * 0.37,
               color: Colors.white,
-              child:participante.accreditation == 0 ? _acreditar() : _mostrarAcreditacion(),
+              child: participante == null ? Container() : participante.accreditation == 0 ? _acreditar() : _mostrarAcreditacion()  ,
             ),
           ],
         ),
@@ -230,15 +231,18 @@ class _ProfileState extends State<Profile> {
           ),
           onPressed: () async {
             //ACREDITAR USUARIO
-
-            //SUMAR CREDITOS
-
-            //ACTUALIZAR PARTICIPANTE
-            inicializar();
-
-            //SE ACREDITO ACTUALIZAR HOME
-            acreditado = true;
-            setState(() {});
+            String qr = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=${participante.uid}&u_uid=${participante.u_uid}';
+            var response = await conexionHispanos.httpVerificarQR(qr);
+            if(response.statusCode == 200){
+              //SUMAR CREDITOS
+              cantAcreditados++;
+              sumarCredito(cantAcreditados);
+              //ACTUALIZAR PARTICIPANTE
+              inicializar();
+              //SE ACREDITO ACTUALIZAR HOME
+              acreditado = true;
+              setState(() {});
+            }
           },
         ),
       ),

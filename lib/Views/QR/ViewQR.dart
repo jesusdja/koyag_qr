@@ -285,7 +285,7 @@ class _ViewQRState extends State<ViewQR> {
   }
 
   Widget _titulo(){
-    return Text('Acreditaciones en este dispositivo: XXXX',
+    return Text('Acreditaciones en este dispositivo: $cantAcreditados',
       textAlign: TextAlign.center,
       style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: FontWeight.bold,letterSpacing: 0.5),
     );

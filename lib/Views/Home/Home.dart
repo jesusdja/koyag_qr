@@ -209,6 +209,12 @@ class _HomeState extends State<Home> {
 
           Usuario usuario = Usuario.fromJson(participantes[index]);
 
+          if(usuario.fullname.toLowerCase().contains(filtro.toLowerCase()) || filtro == ''){
+            print('');
+          }else{
+            return Container();
+          }
+
           if(letraList.toUpperCase() != usuario.lastname.toUpperCase().substring(0,1)){
             letraList = usuario.lastname.substring(0,1).toUpperCase();
             return Container(
@@ -322,7 +328,7 @@ class _HomeState extends State<Home> {
               border: InputBorder.none,
               contentPadding:EdgeInsets.symmetric(horizontal: ancho * 0.05, vertical: alto * 0.022)
           ),
-          onSaved: (value) {
+          onChanged: (value) {
             filtro = value;
             setState(() {});
           },
