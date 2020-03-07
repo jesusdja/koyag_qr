@@ -217,7 +217,12 @@ class _LoginState extends State<Login> {
           InkWell(
             onTap: () async {
               try{
-                await canLaunch('www.google.com');
+                const url = 'https://koyagmain.s3.amazonaws.com/Condiciones+y+Terminos+de+Uso+Koyag.pdf';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
               }catch(e){
                 print(e.toString());
               }
