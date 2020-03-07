@@ -19,10 +19,14 @@ class _HomeState extends State<Home> {
   double alto = 0;
   double ancho = 0;
   bool cargando = true;
+  int cantAcreditados = 0;
+  String nombreEvents = '';
 
   conexionHttp conexionHispanos = new conexionHttp();
 
   List<dynamic> participantes;
+
+
 
   @override
   void initState() {
@@ -32,13 +36,20 @@ class _HomeState extends State<Home> {
   }
 
   inicializar() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cantAcreditados = prefs.getInt('koyagQRCantAcreditados');
+    if(cantAcreditados == null){cantAcreditados = 0;}
+    nombreEvents =  prefs.getString('koyagQRNombreEvent');
+
     cargando = true;
     setState(() {});
 
     try{
       var response = await conexionHispanos.httpListarUser();
-      var value = jsonDecode(response.body);
-      participantes = value['data']['participants'];
+      if(response.statusCode == 200){
+        var value = jsonDecode(response.body);
+        participantes = value['data']['participants'];
+      }
     }catch(e){
       print(e.toString());
     }
@@ -129,7 +140,7 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              _textoHeader('Evento XXX',FontWeight.bold),
+              _textoHeader('Evento $nombreEvents',FontWeight.bold),
               _textoHeader('Lun, 24 de marzo 2020 9:00 a.m',FontWeight.normal),
             ],
           ),
@@ -166,7 +177,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(top: alto * 0.03,bottom: alto * 0.03),
-            child: _textoHome('Acreditaciones en este dispositivo: XXXX',TextAlign.center,FontWeight.bold,alto * 0.025),
+            child: _textoHome('Acreditaciones en este dispositivo: $cantAcreditados',TextAlign.center,FontWeight.bold,alto * 0.025),
           ),
           Container(
             color: Colors.white,
@@ -280,9 +291,12 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-      onTap: (){
-        Navigator.push(context, new MaterialPageRoute(
-            builder: (BuildContext context) => new Profile()));
+      onTap: () async {
+        final result =  await Navigator.push(context, new MaterialPageRoute(
+            builder: (BuildContext context) => new Profile(usuarioRes: usuario,)));
+        if(result){
+          inicializar();
+        }
       },
     );
   }
@@ -342,9 +356,19 @@ class _HomeState extends State<Home> {
                         child: textoDialog(context,'Ok'),
                         onPressed: () async {
                           SharedPreferences prefs = await SharedPreferences.getInstance();
-                          prefs.remove('koyagQRLogin');
-                          Navigator.push(context, new MaterialPageRoute(
-                              builder: (BuildContext context) => new Login()));
+                          try{
+                            var response = await conexionHispanos.httpCerrarSesion();
+                            if(response.statusCode == 200){
+                              var value = jsonDecode(response.body);
+                              if(value['valid']){
+                                prefs.remove('koyagQRLogin');
+                                Navigator.push(context, new MaterialPageRoute(
+                                    builder: (BuildContext context) => new Login()));
+                              }
+                            }
+                          }catch(e){
+                            print(e.toString());
+                          }
                         },
                       ),
                     ),

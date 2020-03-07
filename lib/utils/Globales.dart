@@ -10,3 +10,8 @@ Future<String> obtenerToken() async {
   return token;
 }
 
+sumarCredito(int cant) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('koyagQRLogin',cant);
+}
+

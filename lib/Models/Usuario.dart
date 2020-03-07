@@ -6,6 +6,7 @@ class Usuario {
   String email;
   int accreditationStatus;
   int accreditation;
+  String uuid;
 
   Usuario(
       {this.participantId,
@@ -14,7 +15,9 @@ class Usuario {
         this.fullname,
         this.email,
         this.accreditationStatus,
-        this.accreditation});
+        this.accreditation,
+        this.uuid
+      });
 
   Usuario.fromJson(Map<String, dynamic> json) {
     participantId = json['participantId'];
@@ -24,6 +27,7 @@ class Usuario {
     email = json['email'];
     accreditationStatus = json['accreditationStatus'];
     accreditation = json['accreditation'];
+    uuid = json['uuid'];
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +39,7 @@ class Usuario {
     data['email'] = this.email;
     data['accreditationStatus'] = this.accreditationStatus;
     data['accreditation'] = this.accreditation;
+    data['uuid'] = this.uuid;
     return data;
   }
 }

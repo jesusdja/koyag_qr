@@ -145,19 +145,27 @@ class _LoginState extends State<Login> {
                 email = 'julian@koyag.com';
                 password = '123123123';
                 var response = await conexionHispanos.httpIniciarSesion(email,password);
-                var value = jsonDecode(response.body);
-                if(value['access_token'] != null){
-                  await prefs.setInt('koyagQRLogin',1);
-                  await prefs.setString('koyagQRToken','${value['access_token']}');
+                if(response.statusCode == 200){
+                  var value = jsonDecode(response.body);
+                  if(value['access_token'] != null){
 
-                Navigator.push(context, new MaterialPageRoute(
-                    builder: (BuildContext context) => new Home()));
+                    await prefs.setInt('koyagQRLogin',1);
+                    await prefs.setString('koyagQRToken','${value['access_token']}');
 
-                }else{
-                  String error = '${value['message']['username']} o ${value['message']['password']}';
-                  _showAlert(error);
-                  cargando = false;
-                  setState(() {});
+                    String idEvent = value['event'];
+                    String nombre = value['events']['$idEvent'];
+
+                    await prefs.setString('koyagQRNombreEvent','$nombre');
+
+                    Navigator.push(context, new MaterialPageRoute(
+                        builder: (BuildContext context) => new Home()));
+
+                  }else{
+                    String error = '${value['message']['username']} o ${value['message']['password']}';
+                    _showAlert(error);
+                    cargando = false;
+                    setState(() {});
+                  }
                 }
               }catch(e){
                 print(e.toString());

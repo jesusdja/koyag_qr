@@ -5,7 +5,9 @@ import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/utils/Colores.dart';
+import 'package:koyag_qr/utils/Globales.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewQR extends StatefulWidget {
   @override
@@ -21,6 +23,7 @@ class _ViewQRState extends State<ViewQR> {
   double alto = 0;
   double ancho = 0;
   enumStatusQR statusQR;
+  int cantAcreditados = 0;
 
   @override
   initState() {
@@ -30,6 +33,11 @@ class _ViewQRState extends State<ViewQR> {
   }
 
   inicializar() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cantAcreditados = prefs.getInt('koyagQRCantAcreditados');
+    if(cantAcreditados == null){cantAcreditados = 0;}
+
     await Future.delayed(Duration(milliseconds: 800));
     camState = true;
     setState(() {});
@@ -166,8 +174,8 @@ class _ViewQRState extends State<ViewQR> {
 
   _verificarQR() async {
     try{
-      String qr2 = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3';
-      var response = await conexionHispanos.httpVerificarQR(qr2);
+      //String qr2 = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3';
+      var response = await conexionHispanos.httpVerificarQR(qr);
 
       if(response.statusCode == 200){
         var value = jsonDecode(response.body);
@@ -191,6 +199,8 @@ class _ViewQRState extends State<ViewQR> {
   Widget _mensaje() {
 
     if(statusQR == enumStatusQR.accreditation_valid){
+      cantAcreditados++;
+      sumarCredito(cantAcreditados);
       return alertaSmS('Juan Pablo López','Ha sido acreditado','a las 09:41',colorAlert1,1);
     }
     if(statusQR == enumStatusQR.accredited){

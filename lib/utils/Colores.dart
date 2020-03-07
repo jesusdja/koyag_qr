@@ -37,3 +37,10 @@ Color colorAlert2 = HexColor('#F00A4D');
 Color colorAlert3 = HexColor('#FFF3CD');
 Color colorOpacyt2 = HexColor('#343356');
 
+// *******************************
+//************PERFIL**************
+//********************************
+Color colorButton = HexColor('#01C770');
+Color coloraceptado = HexColor('#EBFBF4');
+
+

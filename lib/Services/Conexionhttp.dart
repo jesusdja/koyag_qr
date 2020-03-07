@@ -18,6 +18,18 @@ class conexionHttp{
     return response;
   }
 
+  Future<http.Response> httpCerrarSesion() async{
+    var response;
+    try{
+      String token  = await obtenerToken();
+      String url = 'https://koyangdev.koyag.com/auth/logout';
+      response = await http.post(url,headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
+    }catch(ex){
+      print(ex.toString());
+    }
+    return response;
+  }
+
   Future<http.Response> httpVerificarQR(String qr) async{
     var response;
 
@@ -41,6 +53,22 @@ class conexionHttp{
 
     try{
       String url = 'https://koyangdev.koyag.com/8df4fdfc/app';
+      String token  = await obtenerToken();
+      response = await http.get(url,
+          headers: {HttpHeaders.authorizationHeader: "Bearer $token"}
+      );
+    }catch(e){
+      print(e.toString());
+    }
+
+    return response;
+  }
+
+  Future<http.Response> httpBuscarUser(String id) async{
+    var response;
+
+    try{
+      String url = 'https://koyangdev.koyag.com/8df4fdfc/app/participant?u_uid=$id';
       String token  = await obtenerToken();
       response = await http.get(url,
           headers: {HttpHeaders.authorizationHeader: "Bearer $token"}
