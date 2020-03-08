@@ -43,50 +43,81 @@ class _ViewQRState extends State<ViewQR> {
     setState(() {});
   }
 
+  Future<bool> exit() async {
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
 
     alto = MediaQuery.of(context).size.height;
     ancho = MediaQuery.of(context).size.width;
 
-    return new Scaffold(
-      backgroundColor: colorOpacyt,
-      body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            Center(
-              child: Container(
-                color: colorOpacyt,
-                width: ancho,
-                height: alto * 0.8,
-                child: _camara(),
+    return WillPopScope(
+      onWillPop: exit,
+      child: new Scaffold(
+        backgroundColor: colorOpacyt,
+        body: SafeArea(
+          child: Stack(
+            children: <Widget>[
+              Center(
+                child: Container(
+                  color: colorOpacyt,
+                  width: ancho,
+                  height: alto * 0.8,
+                  child: _camara(),
+                ),
               ),
-            ),
-            Opacity(
-              opacity: 0.90,
-              child: Container(
+              Opacity(
+                opacity: 0.90,
+                child: Container(
+                  width: ancho,
+                  height: alto,
+                  child: _fondo1(),
+                ),
+              ),
+              Container(
                 width: ancho,
                 height: alto,
-                child: _fondo1(),
+                child: _enfoque(),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: alto * 0.01),
-              child: _header(),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: alto * 0.1),
-              width: ancho,
-              child: _titulo(),
-            ),
-            statusQR != enumStatusQR.inactivo ? Container(
-              width: ancho,
-              margin: EdgeInsets.only(top: alto * 0.78,left: ancho * 0.1,right: ancho * 0.1),
-              child: _mensaje(),
-            ) : Container(),
-          ],
-        )
+              Container(
+                margin: EdgeInsets.only(top: alto * 0.01),
+                child: _header(),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: alto * 0.1),
+                width: ancho,
+                child: _titulo(),
+              ),
+              statusQR != enumStatusQR.inactivo ? Container(
+                width: ancho,
+                margin: EdgeInsets.only(top: alto * 0.78,left: ancho * 0.1,right: ancho * 0.1),
+                child: _mensaje(),
+              ) : Container(),
+            ],
+          )
+        ),
       ),
+    );
+  }
+
+  Widget _enfoque(){
+    return Center(
+      child: Container(
+        width: ancho * 0.82,
+        height: alto * 0.45,
+        decoration: new BoxDecoration(
+          image: new DecorationImage(
+            image: statusQR == enumStatusQR.inactivo ?
+            Image.asset('assets/marco_inactivo.png').image :
+            Image.asset('assets/marco_activo.png').image,
+            fit: BoxFit.fill,
+          ),
+        ),
+      )
+
+
     );
   }
 
@@ -109,18 +140,15 @@ class _ViewQRState extends State<ViewQR> {
               style: TextStyle(color: Colors.red),
             ),
             qrCodeCallback: (code) {
-              setState(() {
-                qr = code;
-                //https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3
-                print(qr);
-
-                if(qr != null && qr != '' && checkQR == false){
-                  setState(() {
-                    checkQR = true;
-                  });
-                  _verificarQR();
-                }
-              });
+              qr = code;
+              //https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3
+              print(qr);
+              if(qr != null && qr != '' && checkQR == false){
+                checkQR = true;
+                statusQR = enumStatusQR.inactivo;
+                setState(() {});
+                _verificarQR();
+              }
             },
           )
               : new Center(child: new Text("Cargando lector QR")),
@@ -137,21 +165,29 @@ class _ViewQRState extends State<ViewQR> {
       //String qr2 = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3';
       var response = await conexionHispanos.httpVerificarQR(qr);
 
-      if(response.statusCode == 200){
-        var value = jsonDecode(response.body);
-        if(value['status'] == 'accredited'){
-          statusQR = enumStatusQR.accredited;
-          nombreAcredit = value['fullname'];
-          horaAcredit = value['accreditationHour'];
+      if(response != null){
+        if(response.statusCode == 200){
+          var value = jsonDecode(response.body);
+          if(value['status'] == 'accredited'){
+            statusQR = enumStatusQR.accredited;
+            nombreAcredit = value['fullname'];
+            horaAcredit = value['accreditationHour'];
+          }
+          if(value['status'] == 'accreditation_valid'){
+            statusQR = enumStatusQR.accreditation_valid;
+            nombreAcredit = value['fullname'];
+            horaAcredit = value['accreditationHour'];
+            acreditado = true;
+            cantAcreditados++;
+            sumarCredito(cantAcreditados);
+          }
+          if(value['status'] == 'invalid_qr'){statusQR = enumStatusQR.invalid_qr;}
+          if(value['status'] == 'event_closed'){statusQR = enumStatusQR.event_closed;}
         }
-        if(value['status'] == 'accreditation_valid'){
-          statusQR = enumStatusQR.accreditation_valid;
-          nombreAcredit = value['fullname'];
-          horaAcredit = value['accreditationHour'];
-        }
-        if(value['status'] == 'invalid_qr'){statusQR = enumStatusQR.invalid_qr;}
-        if(value['status'] == 'event_closed'){statusQR = enumStatusQR.event_closed;}
+      }else{
+        statusQR = enumStatusQR.invalid_qr;
       }
+
       await Future.delayed(Duration(seconds: 2));
       setState(() {
         checkQR = false;
@@ -167,8 +203,6 @@ class _ViewQRState extends State<ViewQR> {
   Widget _mensaje() {
 
     if(statusQR == enumStatusQR.accreditation_valid){
-      cantAcreditados++;
-      sumarCredito(cantAcreditados);
       return alertaSmS('$nombreAcredit','Ha sido acreditado','A las $horaAcredit',colorAlert1,1);
     }
     if(statusQR == enumStatusQR.accredited){
@@ -259,6 +293,7 @@ class _ViewQRState extends State<ViewQR> {
     );
   }
 
+  bool acreditado = false;
   Widget _header(){
     return Row(
       children: <Widget>[
@@ -267,7 +302,7 @@ class _ViewQRState extends State<ViewQR> {
           child: IconButton(
             icon: Icon(Icons.arrow_back,size: 30,color: Colors.white,),
             onPressed: (){
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(acreditado);
             },
           ),
         ),

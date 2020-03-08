@@ -167,6 +167,11 @@ class _LoginState extends State<Login> {
                     cargando = false;
                     setState(() {});
                   }
+                }else{
+                  String error = 'Datos incorrectos';
+                  _showAlert(error);
+                  cargando = false;
+                  setState(() {});
                 }
               }catch(e){
                 print(e.toString());

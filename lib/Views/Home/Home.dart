@@ -104,10 +104,11 @@ class _HomeState extends State<Home> {
                           child: Image.asset('assets/codigo-qr.png',scale: 1.2,),
                         ),
                         onPressed: () async {
-
-                          Navigator.push(context, new MaterialPageRoute(
+                          final result =  await Navigator.push(context, new MaterialPageRoute(
                               builder: (BuildContext context) => new ViewQR()));
-
+                          if(result){
+                            inicializar();
+                          }
                         },
                       ),
                     ),
