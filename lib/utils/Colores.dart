@@ -27,6 +27,7 @@ Color colorFondo = HexColor('#454473');
 Color colorFondo2 = HexColor('#EAEFF1');
 Color colorCheck = HexColor('#00C770');
 Color colorCheckOff = HexColor('#707070');
+Color colorBordeButton = HexColor('#C4C4C4');
 
 // *******************************
 //************QR******************

@@ -143,8 +143,8 @@ class _LoginState extends State<Login> {
             }else{
               formKey.currentState.save();
               try{
-                email = 'julian@koyag.com';
-                password = '123123123';
+//                email = 'julian@koyag.com';
+//                password = '123123123';
                 var response = await conexionHispanos.httpIniciarSesion(email,password);
                 if(response.statusCode == 200){
                   var value = jsonDecode(response.body);

@@ -44,3 +44,11 @@ flutter:
       fonts:
         - asset: assets/Roboto.ttf
           style: normal
+    - family: robotobold
+      fonts:
+        - asset: assets/Roboto-Bold.ttf
+          style: normal
+    - family: RobotoBlack
+      fonts:
+        - asset: assets/Roboto-Black.ttf
+          style: normal

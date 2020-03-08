@@ -122,15 +122,10 @@ class _ViewQRState extends State<ViewQR> {
   }
 
 
-
+  String qrOld = '';
   Widget _camara(){
     return Center(
       child: Container(
-        //margin: EdgeInsets.symmetric(horizontal: ancho * 0.08 , vertical: alto * 0.24 ),
-//        decoration: BoxDecoration(
-//            color: Color.fromRGBO(0, 0, 0, 0.7),
-//            borderRadius: BorderRadius.circular(20.0)
-//        ),
         child: SizedBox(
           child: camState
               ? new QrCamera(
@@ -143,9 +138,9 @@ class _ViewQRState extends State<ViewQR> {
               qr = code;
               //https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3
               print(qr);
-              if(qr != null && qr != '' && checkQR == false){
+              if(qrOld != qr || checkQR == false){
+                qrOld = qr;
                 checkQR = true;
-                statusQR = enumStatusQR.inactivo;
                 setState(() {});
                 _verificarQR();
               }
@@ -188,14 +183,20 @@ class _ViewQRState extends State<ViewQR> {
         statusQR = enumStatusQR.invalid_qr;
       }
 
-      await Future.delayed(Duration(seconds: 2));
-      setState(() {
-        checkQR = false;
-      });
+      setState(() {});
+      esperarLeerMismo();
+      print('SIGO');
 
     }catch(e){
       print(e.toString());
     }
+  }
+
+  esperarLeerMismo() async {
+    await Future.delayed(Duration(seconds: 50));
+    setState(() {
+      checkQR = false;
+    });
   }
 
   bool checkQR = false;
