@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/Views/Home/Home.dart';
@@ -33,6 +34,14 @@ class _LoginState extends State<Login> {
   void initState() {
     inicializar();
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+  @override
+  dispose(){
+    super.dispose();
   }
 
   inicializar() async {
@@ -93,7 +102,9 @@ class _LoginState extends State<Login> {
                     _terminos(),
                     SizedBox(height: alto * 0.03,),
                     cargando ? Container(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(colorPurple),
+                      ),
                     ) : _buttonSumit(context),
                     SizedBox(height: alto * 0.03,),
                     _olvidePass(),

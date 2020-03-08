@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/Models/Usuario.dart';
 import 'package:koyag_qr/Views/Login/Login.dart';
@@ -34,6 +35,16 @@ class _HomeState extends State<Home> {
     inicializar(1,null);
     super.initState();
     participantes = new List<dynamic>();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  @override
+  dispose(){
+    super.dispose();
   }
 
   inicializar(int tipo,BuildContext context) async {
@@ -101,12 +112,13 @@ class _HomeState extends State<Home> {
                 ),
                 Positioned(
                   left: ancho * 0.75,
-                  top: alto * 0.7,
+                  top: alto * 0.83,
                   child: Container(
                     height: 80.0,
                     width: 80.0,
                     child: FittedBox(
                       child: FloatingActionButton(
+                        elevation: 20,
                         backgroundColor: colorPurple,
                         child: Center(
                           child: Image.asset('assets/codigo-qr.png',scale: 1.2,),
@@ -222,23 +234,21 @@ class _HomeState extends State<Home> {
           Usuario usuario = Usuario.fromJson(participantes[index]);
 
           if(usuario.fullname.toLowerCase().contains(filtro.toLowerCase()) || filtro == ''){
-            print('');
+            if(letraList.toUpperCase() != usuario.lastname.toUpperCase().substring(0,1)){
+              letraList = usuario.lastname.substring(0,1).toUpperCase();
+              return Container(
+                child: Column(
+                  children: <Widget>[
+                    _item('$letraList'),
+                    _itemDescrip('${usuario.lastname}, ${usuario.firstname}',usuario,context),
+                  ],
+                ),
+              );
+            }
+            return _itemDescrip('${usuario.lastname}, ${usuario.firstname}',usuario,context);
           }else{
             return Container();
           }
-
-          if(letraList.toUpperCase() != usuario.lastname.toUpperCase().substring(0,1)){
-            letraList = usuario.lastname.substring(0,1).toUpperCase();
-            return Container(
-              child: Column(
-                children: <Widget>[
-                  _item('$letraList'),
-                  _itemDescrip('${usuario.lastname},${usuario.firstname}',usuario,context),
-                ],
-              ),
-            );
-          }
-          return _itemDescrip('${usuario.lastname},${usuario.firstname}',usuario,context);
         },
       ) : Center(
         child: Container(
@@ -252,7 +262,7 @@ class _HomeState extends State<Home> {
 
   Widget _item(texto){
     return Container(
-      padding: EdgeInsets.only(left: ancho * 0.05,right: ancho * 0.05),
+      padding: EdgeInsets.only(left: ancho * 0.07,right: ancho * 0.07),
       width: ancho,
       height: alto * 0.05,
       child: Center(
@@ -270,7 +280,7 @@ class _HomeState extends State<Home> {
       child: Card(
         margin: EdgeInsets.all(0.5),
         child: Container(
-          padding: EdgeInsets.only(left: ancho * 0.05,right: ancho * 0.05),
+          padding: EdgeInsets.only(left: ancho * 0.07,right: ancho * 0.07),
           width: ancho,
           height: alto * 0.09,
           color: Colors.white,
@@ -280,7 +290,7 @@ class _HomeState extends State<Home> {
               child: Row(
                 children: <Widget>[
                   Expanded(
-                    flex: 5,
+                    flex: 8,
                     child: _textoLista('$texto',TextAlign.left,alto * 0.022)
                   ),
                   Expanded(
@@ -288,19 +298,6 @@ class _HomeState extends State<Home> {
                     child: usuario.accreditationStatus == 0 ?
                     Icon(Icons.remove_circle_outline,color: colorCheckOff,) :
                     Icon(Icons.check_circle_outline,color: colorCheck,),
-//                    IconButton(
-//                      icon: (mapCheck[usuario.participantId]== null || mapCheck[usuario.participantId] == false) ?
-//                      Icon(Icons.remove_circle_outline,color: colorCheckOff,) :
-//                      Icon(Icons.check_circle_outline,color: colorCheck,),
-//                      onPressed: (){
-//                        if(mapCheck[usuario.participantId] == null){mapCheck[usuario.participantId] = false;}
-//                        mapCheck[usuario.participantId] = !mapCheck[usuario.participantId];
-//                        setState(() {});
-//
-//                        //MODIFICAR EN API
-//
-//                      },
-//                    ),
                   ),
 
                 ],
@@ -322,7 +319,7 @@ class _HomeState extends State<Home> {
   Widget _textoLista(String texto,TextAlign alinear,double alto){
     return Text(texto,
       textAlign: alinear,
-      style: TextStyle(fontWeight: FontWeight.bold,fontSize: alto),
+      style: TextStyle(fontSize: alto,fontWeight: FontWeight.bold),
     );
   }
 

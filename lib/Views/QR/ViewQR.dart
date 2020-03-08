@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/utils/Colores.dart';
@@ -30,6 +31,15 @@ class _ViewQRState extends State<ViewQR> {
     statusQR = enumStatusQR.inactivo;
     super.initState();
     inicializar();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  @override
+  dispose(){
+    super.dispose();
   }
 
   inicializar() async {

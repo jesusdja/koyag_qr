@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:koyag_qr/Models/Participante.dart';
 import 'package:koyag_qr/Models/Usuario.dart';
 import 'package:koyag_qr/Services/Conexionhttp.dart';
@@ -23,6 +24,7 @@ class _ProfileState extends State<Profile> {
   int cantAcreditados = 0;
   Participante participante;
   bool acreditado = false;
+  bool cargando = false;
 
   conexionHttp conexionHispanos = new conexionHttp();
 
@@ -32,6 +34,14 @@ class _ProfileState extends State<Profile> {
     super.initState();
     usuario = widget.usuarioRes;
     inicializar();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+  @override
+  dispose(){
+    super.dispose();
   }
 
   inicializar() async {
@@ -149,7 +159,18 @@ class _ProfileState extends State<Profile> {
               width: ancho,
               height: alto * 0.37,
               color: Colors.white,
-              child: participante == null ? Container() : participante.accreditation == 0 ? _acreditar() : _mostrarAcreditacion()  ,
+              child: participante == null ? Container() :
+              participante.accreditation == 0 ? (
+                cargando ? Container(
+                  width: ancho * 0.8,
+                  height: alto * 0.06,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(colorPurple),
+                    ),
+                  ),
+                ) : _acreditar()
+              ) : _mostrarAcreditacion()  ,
             ),
           ],
         ),
@@ -230,6 +251,9 @@ class _ProfileState extends State<Profile> {
               side: BorderSide(color: colorButton)
           ),
           onPressed: () async {
+            setState(() {
+              cargando = true;
+            });
             //ACREDITAR USUARIO
             String qr = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=${participante.uid}&u_uid=${participante.u_uid}';
             var response = await conexionHispanos.httpVerificarQR(qr);
@@ -242,6 +266,10 @@ class _ProfileState extends State<Profile> {
               //SE ACREDITO ACTUALIZAR HOME
               acreditado = true;
               setState(() {});
+            }else{
+              setState(() {
+                cargando = false;
+              });
             }
           },
         ),

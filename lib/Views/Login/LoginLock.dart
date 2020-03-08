@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/utils/Colores.dart';
 import 'package:koyag_qr/utils/Validator.dart';
@@ -21,6 +22,20 @@ class _LoginBlockState extends State<LoginBlock> {
   bool sendEmail = false;
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  @override
+  dispose(){
+    super.dispose();
+  }
 
   Future<bool> exit() async {
     return false;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:koyag_qr/Services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -14,8 +15,8 @@ class _StarLogoState extends State<StartLogo> with SingleTickerProviderStateMixi
   }
 
   @override
-  void dispose(){
-    super.dispose();
+  initState() {
+    super.initState();
   }
 
   @override
