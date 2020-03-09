@@ -74,19 +74,19 @@ class _LoginState extends State<Login> {
             children: <Widget>[
               Container(
                 width: ancho,
-                height: alto * 0.12,
-                margin: EdgeInsets.only(left: ancho * 0.15,right: ancho * 0.15,top: alto * 0.15),
+                height: alto * 0.3,
+                margin: EdgeInsets.only(left: ancho * 0.4),
                 child: FittedBox(
-                  child: Image.asset('assets/logoKY.png'),
+                  child: Image.asset('assets/curva.png'),
                   fit: BoxFit.fill,
                 ),
               ),
               Container(
                 width: ancho,
-                height: alto * 0.3,
-                margin: EdgeInsets.only(left: ancho * 0.4),
+                height: alto * 0.1,
+                margin: EdgeInsets.only(left: ancho * 0.15,right: ancho * 0.15,top: alto * 0.15),
                 child: FittedBox(
-                  child: Image.asset('assets/curva.png'),
+                  child: Image.asset('assets/logo_koyagQR.png'),
                   fit: BoxFit.fill,
                 ),
               ),
@@ -215,7 +215,7 @@ class _LoginState extends State<Login> {
   Widget _terminos(){
     return Container(
       width: ancho,
-      margin: EdgeInsets.only(left: ancho * 0.01,right: ancho * 0.05),
+      margin: EdgeInsets.only(left: ancho * 0.03),
       child: Row(
         children: <Widget>[
           Transform.scale(
@@ -229,7 +229,7 @@ class _LoginState extends State<Login> {
               },
             ),
           ),
-          Text('Acepto los '),
+          Text('Acepto los ',style: TextStyle(color: colorfooter),),
           InkWell(
             onTap: () async {
               try{
@@ -258,33 +258,80 @@ class _LoginState extends State<Login> {
         child: Column(
           children: <Widget>[
             Container(
-              child: Material(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0),side: BorderSide(color: colorBordeForm)),
-                child: TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                      hintText: 'Correo electrónico',
-                      border: InputBorder.none,
-                      contentPadding:EdgeInsets.symmetric(horizontal: ancho * 0.05, vertical: alto * 0.022)
+              child: TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  hintText: 'Correo electrónico',
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: colorBordeForm,
+                      width: 1.0,
+                    ),
                   ),
-                  onSaved: (value) => email = value,
-                  validator: (value) => Validator.validateEmail(value),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: Colors.red,
+                      width: 2.0,
+                    ),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: Colors.red,
+                      width: 2.0,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: colorBordeForm,
+                      width: 1.0,
+                    ),
+                  ),
+                  contentPadding:EdgeInsets.symmetric(horizontal: ancho * 0.05, vertical: alto * 0.026)
                 ),
+                onSaved: (value) => email = value,
+                validator: (value) => Validator.validateEmail(value),
               ),
             ),
             SizedBox(height: alto * 0.04,),
             Container(
-              child: Material(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0),side: BorderSide(color: colorBordeForm)),
-                child: TextFormField(
-                  keyboardType: TextInputType.text,
-                  obscureText: !block_pass,
-                  decoration: InputDecoration(
+              child: TextFormField(
+                keyboardType: TextInputType.text,
+                obscureText: !block_pass,
+                decoration: InputDecoration(
                     hintText: 'Contraseña',
-                    border: InputBorder.none,
-                    contentPadding:EdgeInsets.symmetric(horizontal: ancho * 0.05, vertical: alto * 0.022),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: colorBordeForm,
+                        width: 1.0,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: Colors.red,
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: Colors.red,
+                        width: 2.0,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: colorBordeForm,
+                        width: 1.0,
+                      ),
+                    ),
+                    contentPadding:EdgeInsets.symmetric(horizontal: ancho * 0.05, vertical: alto * 0.026),
                     suffixIcon: IconButton(
                       icon: !block_pass ? Icon(Icons.remove_red_eye,color: Colors.black,) : Icon(Icons.visibility_off,color: Colors.black),
                       onPressed: (){
@@ -292,10 +339,9 @@ class _LoginState extends State<Login> {
                         setState(() {});
                       },
                     )
-                  ),
-                  onSaved: (value) => password = value,
-                  validator: (value) => Validator.validatePassword(value),
                 ),
+                onSaved: (value) => password = value,
+                validator: (value) => Validator.validatePassword(value),
               ),
             ),
           ],
@@ -309,7 +355,7 @@ class _LoginState extends State<Login> {
       width: ancho * 0.7,
       child: Text('Inicia sesión y comienza la acreditación de los participantes de tu evento',
       textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 14,height: alto * 0.002),),
+      style: TextStyle(fontSize: 14,height: alto * 0.002,fontWeight: FontWeight.bold),),
     );
   }
 
