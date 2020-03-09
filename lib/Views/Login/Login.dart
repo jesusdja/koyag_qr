@@ -261,7 +261,8 @@ class _LoginState extends State<Login> {
               child: TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  hintText: 'Correo electrónico',
+                  labelText: 'Correo electrónico',
+                  labelStyle: TextStyle(color: colorBordeForm),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                     borderSide: BorderSide(
@@ -302,7 +303,8 @@ class _LoginState extends State<Login> {
                 keyboardType: TextInputType.text,
                 obscureText: !block_pass,
                 decoration: InputDecoration(
-                    hintText: 'Contraseña',
+                    labelText: 'Contraseña',
+                    labelStyle: TextStyle(color: colorBordeForm),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                       borderSide: BorderSide(

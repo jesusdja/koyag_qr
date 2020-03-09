@@ -177,6 +177,8 @@ class _ViewQRState extends State<ViewQR> {
   String horaAcredit = '';
 
   _verificarQR() async {
+    entroNuevo = true;
+    setState(() {});
     try{
       //String qr2 = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3';
       var response = await conexionHispanos.httpVerificarQR(qr);
@@ -205,20 +207,23 @@ class _ViewQRState extends State<ViewQR> {
       }
 
       setState(() {});
-      esperarLeerMismo();
-      print('SIGO');
+      esperarLeerMismo(qr);
 
     }catch(e){
       print(e.toString());
     }
   }
 
-  esperarLeerMismo() async {
+  bool entroNuevo = false;
+  esperarLeerMismo(String qrV) async {
+    entroNuevo = false;
+    setState(() {});
     await Future.delayed(Duration(seconds: 5));
-    statusQR = enumStatusQR.inactivo;
-    setState(() {
+    if(qrV == qr){
+      statusQR = enumStatusQR.inactivo;
       checkQR = false;
-    });
+      setState(() {});
+    }
   }
 
   bool checkQR = false;
