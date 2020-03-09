@@ -153,7 +153,7 @@ class _ProfileState extends State<Profile> {
               height: alto * 0.4,
               padding: EdgeInsets.only(top: alto * 0.04),
               color: Colors.white,
-              child: _perfil(),
+              child: _fotoperfil(),
             ),
             Container(
               width: ancho,
@@ -185,14 +185,14 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _perfil(){
+  Widget _fotoperfil(){
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
           width: ancho * 0.3,
-          height: alto * 0.15,
+          height: alto * 0.16,
           decoration: new BoxDecoration(
             color: Colors.white,
             boxShadow: [ BoxShadow(color: Colors.grey[800],)],
@@ -211,19 +211,19 @@ class _ProfileState extends State<Profile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               textoColumPerfil('Nombre '),
-              SizedBox(height: alto * 0.01,),
+              SizedBox(height: alto * 0.015,),
               textoColumPerfil('${participante.fullname}'),
-              SizedBox(height: alto * 0.02,),
+              SizedBox(height: alto * 0.03,),
               textoColumPerfil('Cargo'),
-              SizedBox(height: alto * 0.01,),
+              SizedBox(height: alto * 0.015,),
               textoColumPerfil('${participante.position}'),
-              SizedBox(height: alto * 0.02,),
+              SizedBox(height: alto * 0.03,),
               textoColumPerfil('Empresa'),
-              SizedBox(height: alto * 0.01,),
+              SizedBox(height: alto * 0.015,),
               textoColumPerfil('${participante.organization}'),
-              SizedBox(height: alto * 0.02,),
+              SizedBox(height: alto * 0.03,),
               textoColumPerfil('Correo con el que se acreditó'),
-              SizedBox(height: alto * 0.01,),
+              SizedBox(height: alto * 0.015,),
               textoColumPerfil('${participante.mail}'),
             ],
           ) : Container(),
@@ -233,7 +233,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget textoColumPerfil(String texto){
-    return Text(texto,style: TextStyle(fontSize: alto * 0.02,fontWeight: FontWeight.bold),);
+    return Text(texto == '' ? 'No disponible' : texto,style: TextStyle(fontSize: alto * 0.02,fontWeight: FontWeight.bold),);
   }
 
   Widget _acreditar(){
@@ -282,8 +282,8 @@ class _ProfileState extends State<Profile> {
     Widget widgetAlert = Icon(Icons.check_circle_outline,color: Colors.white,size: alto * 0.06,);
 
     return Container(
-      padding: EdgeInsets.only(top: alto * 0.11,bottom: alto * 0.15,
-          right: ancho * 0.15,left: ancho * 0.15),
+      padding: EdgeInsets.only(top: alto * 0.12,bottom: alto * 0.11,
+          right: ancho * 0.05,left: ancho * 0.05),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -317,11 +317,11 @@ class _ProfileState extends State<Profile> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(participante.fullname,style: TextStyle(fontWeight: FontWeight.bold,fontSize: alto * 0.02),),
-                  SizedBox(height: alto * 0.01,),
+                  Text(participante.fullname,style: TextStyle(fontFamily: 'RobotoBlack',fontSize: alto * 0.02),),
+                  SizedBox(height: alto * 0.015,),
                   Text('Ha sido acreditado',style: TextStyle(fontSize: alto * 0.02),),
-                  SizedBox(height: alto * 0.01,),
-                  Text(participante.accretationHour,style: TextStyle(fontSize: alto * 0.02),)
+                  SizedBox(height: alto * 0.015,),
+                  Text('A las ${participante.accretationHour}',style: TextStyle(fontSize: alto * 0.02),)
                 ],
               ),
             ),

@@ -110,34 +110,53 @@ class _HomeState extends State<Home> {
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))),
                   child:  _contenido(),
                 ),
-                Positioned(
-                  left: ancho * 0.75,
-                  top: alto * 0.83,
-                  child: Container(
-                    height: 80.0,
-                    width: 80.0,
-                    child: FittedBox(
-                      child: FloatingActionButton(
-                        elevation: 20,
-                        backgroundColor: colorPurple,
-                        child: Center(
-                          child: Image.asset('assets/codigo-qr.png',scale: 1.2,),
-                        ),
-                        onPressed: () async {
-                          final result =  await Navigator.push(context, new MaterialPageRoute(
-                              builder: (BuildContext context) => new ViewQR()));
-                          if(result){
-                            inicializar(2,context);
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                )
+//                Positioned(
+//                  left: ancho * 0.75,
+//                  top: alto * 0.8,
+//                  child: Container(
+//                    height: 80.0,
+//                    width: 80.0,
+//                    child: FittedBox(
+//                      child: FloatingActionButton(
+//                        elevation: 20,
+//                        backgroundColor: colorPurple,
+//                        child: Center(
+//                          child: Image.asset('assets/codigo-qr.png',scale: 1.2,),
+//                        ),
+//                        onPressed: () async {
+//                          final result =  await Navigator.push(context, new MaterialPageRoute(
+//                              builder: (BuildContext context) => new ViewQR()));
+//                          if(result){
+//                            inicializar(2,context);
+//                          }
+//                        },
+//                      ),
+//                    ),
+//                  ),
+//                )
               ],
             ),
           ),
-
+          floatingActionButton: Container(
+            height: 80.0,
+            width: 80.0,
+            child: FittedBox(
+              child: FloatingActionButton(
+                elevation: 20,
+                backgroundColor: colorPurple,
+                child: Center(
+                  child: Image.asset('assets/codigo-qr.png',scale: 1.2,),
+                ),
+                onPressed: () async {
+                  final result =  await Navigator.push(context, new MaterialPageRoute(
+                      builder: (BuildContext context) => new ViewQR()));
+                  if(result){
+                    inicializar(2,context);
+                  }
+                },
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -291,7 +310,7 @@ class _HomeState extends State<Home> {
                 children: <Widget>[
                   Expanded(
                     flex: 8,
-                    child: _textoLista('$texto',TextAlign.left,alto * 0.022)
+                    child: _textoLista('$texto',TextAlign.left,alto * 0.023)
                   ),
                   Expanded(
                     flex: 1,
@@ -319,7 +338,7 @@ class _HomeState extends State<Home> {
   Widget _textoLista(String texto,TextAlign alinear,double alto){
     return Text(texto,
       textAlign: alinear,
-      style: TextStyle(fontSize: alto,fontWeight: FontWeight.bold),
+      style: TextStyle(fontSize: alto,fontWeight: FontWeight.bold,color: colorPurpleT2),
     );
   }
 
@@ -428,10 +447,10 @@ class _HomeState extends State<Home> {
                 padding: EdgeInsets.only(left: ancho * 0.1,right: ancho * 0.1),
                 child: Text('$texto',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: alto * 0.023,fontFamily: 'RobotoBlack'),
+                  style: TextStyle(fontSize: alto * 0.025,fontFamily: 'RobotoBlack'),
                 ),
               ),
-              tipo == 1 ? SizedBox(height: alto * 0.12,) : SizedBox(height: alto * 0.18,),
+              tipo == 1 ? SizedBox(height: alto * 0.10,) : SizedBox(height: alto * 0.18,),
               tipo == 1 ? _buttonSumitCerrar(context,'ACEPTAR',1,1) : _buttonSumitCerrar(context,'ACEPTAR',2,1),
               tipo == 1 ? SizedBox(height: alto * 0.015,) : Container(),
               tipo == 1 ? _buttonSumitCerrar(context,'CANCELAR',2,2) : Container(),

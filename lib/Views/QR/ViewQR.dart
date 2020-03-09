@@ -113,15 +113,26 @@ class _ViewQRState extends State<ViewQR> {
   }
 
   Widget _enfoque(){
+
+    Image imagenEnfoque = Image.asset('assets/marco_inactivo.png');
+    if(statusQR == enumStatusQR.accreditation_valid){
+      imagenEnfoque = Image.asset('assets/marco_activo.png');
+    }
+    if(statusQR == enumStatusQR.accredited){
+      imagenEnfoque = Image.asset('assets/marco_activo_2.png');
+    }
+    if(statusQR == enumStatusQR.invalid_qr){
+      imagenEnfoque = Image.asset('assets/marco_activo_3.png');
+    }
+
+
     return Center(
       child: Container(
         width: ancho * 0.82,
         height: alto * 0.45,
         decoration: new BoxDecoration(
           image: new DecorationImage(
-            image: statusQR == enumStatusQR.inactivo ?
-            Image.asset('assets/marco_inactivo.png').image :
-            Image.asset('assets/marco_activo.png').image,
+            image: imagenEnfoque.image,
             fit: BoxFit.fill,
           ),
         ),
@@ -203,7 +214,8 @@ class _ViewQRState extends State<ViewQR> {
   }
 
   esperarLeerMismo() async {
-    await Future.delayed(Duration(seconds: 50));
+    await Future.delayed(Duration(seconds: 5));
+    statusQR = enumStatusQR.inactivo;
     setState(() {
       checkQR = false;
     });
@@ -227,14 +239,22 @@ class _ViewQRState extends State<ViewQR> {
 
   Widget alertaSmS(String titulo,String mensaje,String hora,Color color,int tipo){
 
-    Widget widgetAlert = Icon(Icons.check_circle_outline,color: Colors.white,size: alto * 0.06,);
+    //Widget widgetAlert = Icon(Icons.check_circle_outline,color: Colors.white,size: alto * 0.06,);
+    Widget widgetAlert = FittedBox(
+      fit: BoxFit.fill,
+      child: Image.asset('assets/ico_acreditado.png',scale: 0.8,color: Colors.white,),
+    );
     if(tipo == 2){
-      widgetAlert = Icon(Icons.cancel,color: Colors.white,size: alto * 0.06,);
+      //widgetAlert = Icon(Icons.cancel,color: Colors.white,size: alto * 0.06,);
+      widgetAlert = FittedBox(
+        fit: BoxFit.fill,
+        child: Image.asset('assets/ico_rechazado.png',scale: 0.8,color: Colors.white,),
+      );
     }
     if(tipo == 3){
       widgetAlert = FittedBox(
         fit: BoxFit.fill,
-        child: Image.asset('assets/sad-emoji.png',scale: 0.8,),
+        child: Image.asset('assets/sad-emoji.png',scale: 0.8),
       );
     }
 
