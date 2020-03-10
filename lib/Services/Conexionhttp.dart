@@ -46,9 +46,6 @@ class conexionHttp{
 
     try{
       String token  = await obtenerToken();
-      Map<String, String> requestHeaders = {
-        'Authorization': '$token'
-      };
       response = await http.get(qr,
         headers: {HttpHeaders.authorizationHeader: "Bearer $token"}
       );
