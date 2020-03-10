@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -41,7 +40,9 @@ class _ViewQRState extends State<ViewQR> {
   dispose(){
     super.dispose();
   }
-
+  //**************
+  //INICIALIZAR VARIABLES - CANTIDAD DE CREDITOS EN EL TELEFONO Y ESTADO DE LA CAMARA
+  //**************
   inicializar() async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -111,7 +112,9 @@ class _ViewQRState extends State<ViewQR> {
       ),
     );
   }
-
+  //**************
+  //POSICIONA LA IMAGEN DEL ENFOQUE
+  //**************
   Widget _enfoque(){
 
     Image imagenEnfoque = Image.asset('assets/marco_inactivo.png');
@@ -142,7 +145,9 @@ class _ViewQRState extends State<ViewQR> {
     );
   }
 
-
+  //**************
+  //MUESTRA LA CAMARA QUE LEE EL QR
+  //**************
   String qrOld = '';
   Widget _camara(){
     return Center(
@@ -175,7 +180,9 @@ class _ViewQRState extends State<ViewQR> {
 
   String nombreAcredit = '';
   String horaAcredit = '';
-
+  //**************
+  //FUNCION PARA VERIFICAR UN QR LEIDO POR LA CAMARA
+  //**************
   _verificarQR() async {
     entroNuevo = true;
     setState(() {});
@@ -214,6 +221,10 @@ class _ViewQRState extends State<ViewQR> {
     }
   }
 
+  //**************
+  //ESPERAR 5 SEGUNDOS PARA CAMBIAR EL ESTADO DE LA CAMARA A INACTIVO
+  //SI LEE UNO NUEVO NO CAMBIA EL ESTATUS SINO CON EL ULTIMO QUE LEA
+  //**************
   bool entroNuevo = false;
   esperarLeerMismo(String qrV) async {
     entroNuevo = false;
@@ -226,6 +237,9 @@ class _ViewQRState extends State<ViewQR> {
     }
   }
 
+  //**************
+  //MENSAJE QUE MUESTRA AL LEER EL QR
+  //**************
   bool checkQR = false;
   conexionHttp conexionHispanos = new conexionHttp();
   Widget _mensaje() {
@@ -307,18 +321,6 @@ class _ViewQRState extends State<ViewQR> {
           ),
         ],
       ),
-    );
-  }
-
-  _showAlert(String texto){
-    Fluttertoast.showToast(
-        msg: texto,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.red[900],
-        textColor: Colors.white,
-        fontSize: 16.0
     );
   }
 

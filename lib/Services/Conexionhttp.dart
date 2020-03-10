@@ -5,6 +5,9 @@ import 'package:koyag_qr/utils/Globales.dart';
 
 class conexionHttp{
 
+  //**************
+  //INICIAR SESION
+  //**************
   Future<http.Response> httpIniciarSesion(String correo, String pasw) async{
     var response;
     try{
@@ -17,7 +20,9 @@ class conexionHttp{
     }
     return response;
   }
-
+  //**************
+  //CERRAR SESION
+  //**************
   Future<http.Response> httpCerrarSesion() async{
     var response;
     try{
@@ -29,7 +34,9 @@ class conexionHttp{
     }
     return response;
   }
-
+  //**************
+  //RECUPERAR CONTRASEÑA
+  //**************
   Future<http.Response> httpRecuperarPass(String correo) async{
     var response;
     try{
@@ -40,7 +47,9 @@ class conexionHttp{
     }
     return response;
   }
-
+  //**************
+  //VERIFICAR QR
+  //**************
   Future<http.Response> httpVerificarQR(String qr) async{
     var response;
 
@@ -55,7 +64,9 @@ class conexionHttp{
 
     return response;
   }
-
+  //**************
+  //LISTAR TODOS LOS USUARIOS
+  //**************
   Future<http.Response> httpListarUser() async{
     var response;
 
@@ -71,7 +82,9 @@ class conexionHttp{
 
     return response;
   }
-
+  //**************
+  //BUSCAR USUARIO ESPECIFICO
+  //**************
   Future<http.Response> httpBuscarUser(String id) async{
     var response;
 

@@ -11,6 +11,7 @@ class AuthService with ChangeNotifier{
   Status get status => _status;
 
   Future init() async {
+    //DATOS PARA INICIO DE SESION
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int counter = prefs.getInt('koyagQRLogin');
 
