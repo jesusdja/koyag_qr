@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:koyag_qr/Services/Conexionhttp.dart';
 import 'package:koyag_qr/utils/Colores.dart';
 import 'package:koyag_qr/utils/Globales.dart';
@@ -162,8 +161,6 @@ class _ViewQRState extends State<ViewQR> {
             ),
             qrCodeCallback: (code) {
               qr = code;
-              //https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3
-              print(qr);
               if(qrOld != qr || checkQR == false){
                 qrOld = qr;
                 checkQR = true;
@@ -187,7 +184,6 @@ class _ViewQRState extends State<ViewQR> {
     entroNuevo = true;
     setState(() {});
     try{
-      //String qr2 = 'https://koyangdev.koyag.com/8df4fdfc/app/validation?uid=1&u_uid=89fee6e4-9eb4-4cce-9a82-caf963ed24f3';
       var response = await conexionHispanos.httpVerificarQR(qr);
 
       if(response != null){
@@ -258,13 +254,11 @@ class _ViewQRState extends State<ViewQR> {
 
   Widget alertaSmS(String titulo,String mensaje,String hora,Color color,int tipo){
 
-    //Widget widgetAlert = Icon(Icons.check_circle_outline,color: Colors.white,size: alto * 0.06,);
     Widget widgetAlert = FittedBox(
       fit: BoxFit.fill,
       child: Image.asset('assets/ico_acreditado.png',scale: 0.8,color: Colors.white,),
     );
     if(tipo == 2){
-      //widgetAlert = Icon(Icons.cancel,color: Colors.white,size: alto * 0.06,);
       widgetAlert = FittedBox(
         fit: BoxFit.fill,
         child: Image.asset('assets/ico_rechazado.png',scale: 0.8,color: Colors.white,),

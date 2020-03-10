@@ -110,30 +110,6 @@ class _HomeState extends State<Home> {
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))),
                   child:  _contenido(),
                 ),
-//                Positioned(
-//                  left: ancho * 0.75,
-//                  top: alto * 0.8,
-//                  child: Container(
-//                    height: 80.0,
-//                    width: 80.0,
-//                    child: FittedBox(
-//                      child: FloatingActionButton(
-//                        elevation: 20,
-//                        backgroundColor: colorPurple,
-//                        child: Center(
-//                          child: Image.asset('assets/codigo-qr.png',scale: 1.2,),
-//                        ),
-//                        onPressed: () async {
-//                          final result =  await Navigator.push(context, new MaterialPageRoute(
-//                              builder: (BuildContext context) => new ViewQR()));
-//                          if(result){
-//                            inicializar(2,context);
-//                          }
-//                        },
-//                      ),
-//                    ),
-//                  ),
-//                )
               ],
             ),
           ),
@@ -373,57 +349,6 @@ class _HomeState extends State<Home> {
       textAlign: alinear,
     );
   }
-
-//  _cerrarsesion2(){
-//    showDialog(
-//        context: context,
-//        builder: ( context ) {
-//          return AlertDialog(
-//            title: Text(''),
-//            content: textoDialog(context,'¿Esta seguro que desea salir?'),
-//            actions: <Widget>[
-//              Container(
-//                width: ancho * 0.7,
-//                child: Row(
-//                  children: <Widget>[
-//                    Expanded(
-//                      child: FlatButton(
-//                        child: textoDialog(context,'Ok'),
-//                        onPressed: () async {
-//                          SharedPreferences prefs = await SharedPreferences.getInstance();
-//                          try{
-//                            var response = await conexionHispanos.httpCerrarSesion();
-//                            if(response.statusCode == 200){
-//                              var value = jsonDecode(response.body);
-//                              if(value['valid']){
-//                                prefs.remove('koyagQRLogin');
-//                                Navigator.push(context, new MaterialPageRoute(
-//                                    builder: (BuildContext context) => new Login()));
-//                              }
-//                            }
-//                          }catch(e){
-//                            print(e.toString());
-//                          }
-//                        },
-//                      ),
-//                    ),
-//                    Expanded(child: Container(),),
-//                    Expanded(
-//                      child: FlatButton(
-//                        child: textoDialog(context,'Cancelar'),
-//                        onPressed: ()=> Navigator.of(context).pop(),
-//                      ),
-//                    ),
-//                  ],
-//                ),
-//              ),
-//
-//            ],
-//          );
-//        }
-//    );
-//  }
-
   _cerrarsesion(BuildContext context,String texto,int tipo){
     return showModalBottomSheet(
       backgroundColor: Colors.transparent,

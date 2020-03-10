@@ -15,7 +15,6 @@ class _AppState extends State<App>{
 
   @override
   void initState() {
-    //_verificar();
     super.initState();
   }
 
